@@ -9,10 +9,12 @@ import (
 )
 
 func handle(conn net.Conn) {
-	// Buffered Scanner
-	scanner := bufio.NewScanner(conn)
 	// Make sure at the end we close the connection
 	defer conn.Close()
+
+	// Buffered Scanner
+	scanner := bufio.NewScanner(conn)
+
 	//Wait till scanning goes
 	for scanner.Scan() {
 		// Get the Text that was sent
@@ -41,7 +43,7 @@ func main() {
 	for {
 		conn, err:=link.Accept()
 		if err != nil {
-			panic(err)
+			log.Fatalln(err)
 		}
 		handle(conn)
 		/*
