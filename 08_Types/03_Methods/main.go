@@ -29,12 +29,17 @@ func (p parentinfo) UpdateInfo(parentName, address string) parentinfo {
 	return p
 }
 
+// Method Attached to "ExamInfo" structure
+//  - Here its pointer to the actual data can be changed
 func (p* ExamInfo) UpdateEligibility(ExamScore int) bool {
 	s := *p
 	s.Score = ExamScore
 	// Check the Eligibility
 	s.Eligible = s.Score > 200
 	*p = s
+	/*// This can also be done like
+	p.Score = ExamScore
+	p.Eligible = p.Score > 200*/
 	return s.Eligible
 }
 
