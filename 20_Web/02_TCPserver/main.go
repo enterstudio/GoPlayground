@@ -1,10 +1,10 @@
 package main
 
 import (
-	"net"
 	"bufio"
 	"fmt"
 	"log"
+	"net"
 	"strings"
 )
 
@@ -41,15 +41,15 @@ func main() {
 	defer link.Close()
 
 	for {
-		conn, err:=link.Accept()
+		conn, err := link.Accept()
 		if err != nil {
 			log.Fatalln(err)
 		}
 		handle(conn)
 		/*
-		// Simpler Way to make a echo server, but each time connection would close automatically
-		io.Copy(conn, conn)
-		conn.Close()*/
-
+			// Simpler Way to make a echo server, but each time connection would close automatically
+			io.Copy(conn, conn)
+			conn.Close()
+		*/
 	}
 }
