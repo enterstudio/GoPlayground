@@ -77,7 +77,7 @@ func handlehttp(conn net.Conn) {
 		amt, _ := strconv.Atoi(header["Content-Length"])
 		buf := make([]byte, amt)
 		io.ReadFull(conn, buf)
-		log.Println(" BODY: "+ string(buf))
+		log.Println(" BODY: " + string(buf))
 		// in buf we will have the POST content
 		resp += "<pre> BODY: <br>" + html.EscapeString(string(buf)) + "</pre>"
 	}
