@@ -5,11 +5,11 @@ import "fmt"
 type ExamInfo struct {
 	RollNo   int
 	Eligible bool
-	Score int
+	Score    int
 }
 
-type parentinfo struct{
-	ParentName string
+type parentinfo struct {
+	ParentName  string
 	homeAddress string
 }
 
@@ -31,7 +31,7 @@ func (p parentinfo) UpdateInfo(parentName, address string) parentinfo {
 
 // Method Attached to "ExamInfo" structure
 //  - Here its pointer to the actual data can be changed
-func (p* ExamInfo) UpdateEligibility(ExamScore int) bool {
+func (p *ExamInfo) UpdateEligibility(ExamScore int) bool {
 	s := *p
 	s.Score = ExamScore
 	// Check the Eligibility
@@ -47,16 +47,16 @@ func main() {
 
 	s1 := Student{
 		ExamInfo: ExamInfo{
-			RollNo: 25468,
+			RollNo:   25468,
 			Eligible: true,
-			Score: 200,
+			Score:    200,
 		},
 		parentinfo: parentinfo{
-			ParentName: "Anjana",
+			ParentName:  "Anjana",
 			homeAddress: "22, Unknown Street",
 		},
 		Name: "Radhika",
-		Age: 14,
+		Age:  14,
 	}
 
 	fmt.Println(s1)
@@ -65,7 +65,7 @@ func main() {
 	s1.homeAddress = "45, New Street"
 	fmt.Println(s1)
 	// methods of the Promoted type can be accessed
-	fmt.Println(s1.UpdateInfo("Kirti","101, Named Street"))
+	fmt.Println(s1.UpdateInfo("Kirti", "101, Named Street"))
 	fmt.Println(s1)
 	// Updating Radhika's Latest Test scores
 	fmt.Println(s1.UpdateEligibility(150))

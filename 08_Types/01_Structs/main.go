@@ -4,8 +4,9 @@ import "fmt"
 
 type Person struct {
 	Name string
-	Age int
+	Age  int
 }
+
 func main() {
 	p1 := Person{}
 

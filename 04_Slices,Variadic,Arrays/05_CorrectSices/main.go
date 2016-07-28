@@ -26,10 +26,10 @@ func main() {
 	fmt.Println("Capacity = ", cap(names), "Length =", len(names), "value= ", names)
 	// Notice that the Capacity gets doubled on every additional element
 
-	names2 := []string {"Deven", "Jagan"}
+	names2 := []string{"Deven", "Jagan"}
 	fmt.Println("Capacity = ", cap(names2), "Length =", len(names2), "value= ", names2)
 	// Combining Slices
 	// names = append(names, names2) // - This is wrong as we can add string slice directly
-	names = append(names, names2...)// Representation in Variadic
+	names = append(names, names2...) // Representation in Variadic
 	fmt.Println("Capacity = ", cap(names), "Length =", len(names), "value= ", names)
 }

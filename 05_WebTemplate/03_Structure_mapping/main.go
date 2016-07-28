@@ -7,9 +7,9 @@ import (
 	"os"
 )
 
-type Page struct{
+type Page struct {
 	Title string
-	Body string
+	Body  string
 }
 
 func main() {
@@ -20,7 +20,7 @@ func main() {
 
 	err = tpl.Execute(os.Stdout, Page{
 		Title: " This is a Title ",
-		Body: " This forms the Body ",
+		Body:  " This forms the Body ",
 	})
 	if err != nil {
 		log.Fatalln(err)

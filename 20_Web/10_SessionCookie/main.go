@@ -1,10 +1,10 @@
 package main
 
 import (
+	"github.com/nu7hatch/gouuid"
 	"io"
 	"log"
 	"net/http"
-	"github.com/nu7hatch/gouuid"
 )
 
 func serveRoot(res http.ResponseWriter, req *http.Request) {

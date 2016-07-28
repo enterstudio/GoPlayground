@@ -15,7 +15,7 @@ func main() {
 
 	// Conversion T(x) where T is the type and x is the input variable
 	fmt.Println(" Converted to Byte slice ", []byte(s))
-	fmt.Println(" ByteSice to String ", string([]byte{'h','e','l','l','o'}))
+	fmt.Println(" ByteSice to String ", string([]byte{'h', 'e', 'l', 'l', 'o'}))
 
 	// Single Character in Go is RUNE or int32 (UTF-8)
 	fmt.Printf(" Printing the 'a' Type: %T \n", 'a')
