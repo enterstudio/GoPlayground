@@ -1,8 +1,8 @@
 package main
 
 import (
-	"./submod"
 	"fmt"
+	"github.com/boseji/GoPlayground/01_Scope_n_Input/submod"
 )
 
 // checkker := true // This is wrong as the ':=' can only be used in functions
@@ -18,7 +18,7 @@ func main() {
 	fmt.Println("\n Checking an Imported Submodule Public Function [submod.CheckFunction()] ")
 	fmt.Printf(" %#04X\n", submod.CheckFunction())
 	fmt.Println("\n Checking an Imported Submodule Public variable [submod.TestVariable] ")
-	fmt.Printf(" %#04d\n", submod.TestVariable)
+	fmt.Printf(" %04d\n", submod.TestVariable)
 	fmt.Println("\n Checking Input From Terminal ")
 	fmt.Print(" Enter Your Name: ")
 	fmt.Scan(&name)

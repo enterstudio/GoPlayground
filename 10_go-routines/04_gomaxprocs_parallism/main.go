@@ -2,13 +2,13 @@ package main
 
 import (
 	"fmt"
-	"sync"
 	"runtime"
+	"sync"
 )
 
 var wg sync.WaitGroup
 
-func init(){
+func init() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 }
 

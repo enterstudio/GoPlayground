@@ -2,10 +2,10 @@ package main
 
 import (
 	"fmt"
-	"sync"
-	"time"
-	"sync/atomic"
 	"math/rand"
+	"sync"
+	"sync/atomic"
+	"time"
 )
 
 var wg sync.WaitGroup

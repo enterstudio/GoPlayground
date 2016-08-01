@@ -1,14 +1,14 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"time"
+)
 
 func main() {
 	defer fmt.Println(" Sri Ganeshay Namh!")
 	h1()
-	for i := 0; i < 0xFFFFFF; i++ {
-		m := i * i
-		fmt.Sprint(string(m))
-	}
+	time.Sleep(time.Duration(2) * time.Second)
 }
 
 func h1() {
