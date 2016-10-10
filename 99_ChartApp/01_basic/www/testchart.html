@@ -1,0 +1,62 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>Chart Test</title>
+  <meta name="description" content="Chart Testing Application">
+  <meta name="author" content="SitePoint">
+
+  <!--- <link rel="stylesheet" href="css/styles.css?v=1.0"> --->
+
+  <!--[if lt IE 9]>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.js"></script>
+  <![endif]-->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.3.0/Chart.min.js"></script>
+</head>
+
+<body>
+  <h1>Chart Js Demo</h1>
+  <canvas id="myChart" width="400px" height="400px"></canvas>
+  <p>Chart demo with few histograms.</p>
+  <script>
+  var ctx = document.getElementById("myChart");
+  var data = {
+    labels: ["January", "February", "March", "April", "May", "June", "July"],
+    datasets: [
+      {
+          label: "My First dataset",
+          fill: false,
+          lineTension: 0,
+          backgroundColor: "rgba(75,192,192,0.4)",
+          borderColor: "rgba(75,192,192,1)",
+          borderCapStyle: 'butt',
+          borderDash: [],
+          borderDashOffset: 0.0,
+          borderJoinStyle: 'miter',
+          pointBorderColor: "rgba(75,192,192,1)",
+          pointBackgroundColor: "#fff",
+          pointBorderWidth: 1,
+          pointHoverRadius: 5,
+          pointHoverBackgroundColor: "rgba(75,192,192,1)",
+          pointHoverBorderColor: "rgba(220,220,220,1)",
+          pointHoverBorderWidth: 2,
+          pointRadius: 1,
+          pointHitRadius: 10,
+          data: [65, 59, 80, 81, 56, 55, 40],
+          spanGaps: false,
+      }
+    ]
+  };
+  var scatterChart = new Chart(ctx, {
+    type: 'line',
+    data: data,
+    options: {        
+        responsive: false
+    }
+});
+
+  </script>
+</body>
+</html>
