@@ -59,19 +59,30 @@ func init() {
 	fmt.Println("\n VV All Done ! VV \n\n")
 }
 
+func ErrorRequest(w http.ResponseWriter, code int, message string, more ...string) {
+	s := ""
+	// Combine all the Strings
+	for _, str := range more {
+		s += str
+	}
+	log.Println(s)
+	http.Error(w, message, code)
+}
+
 func ViewHandler(w http.ResponseWriter, r *http.Request) {
 	// Get the URI
 	loc := html.EscapeString(r.URL.Path)
 	if loc == "/view" {
-		http.Error(w, " invlid request", http.StatusUnauthorized)
+		ErrorRequest(w, http.StatusUnauthorized, "invlid request",
+			" view: Unknow path access ")
 		return
 	}
 	// Strip the Prefix
 	loc = strings.TrimLeft(loc, "/view/")
 	// Reject the No Names and multiple slash inputs
 	if len(loc) == 0 || strings.Index(loc, "/") != -1 {
-		log.Println("view: Error - Incorrect ID = ", loc)
-		http.Error(w, " invlid request", http.StatusNotAcceptable)
+		ErrorRequest(w, http.StatusNotAcceptable, "invlid request",
+			"view: Error - Incorrect ID = ", loc)
 		return
 	}
 
@@ -102,17 +113,24 @@ func ViewHandler(w http.ResponseWriter, r *http.Request) {
 	// Execute the Template
 	err := templates.ExecuteTemplate(w, "display.html", &info1)
 	if err != nil {
-		log.Println("view: Error -", err)
-		http.Error(w, "Only POST request Supported", http.StatusInternalServerError)
+		ErrorRequest(w, http.StatusInternalServerError, "Internal Error",
+			"view: Error - Incorrect ID = ", string(err))
 	}
+}
+
+/**
+ * Error Request specific to UpdateHandler
+ */
+func updateErrorRequest(w http.ResponseWriter, message, value string) {
+	ErrorRequest(w, http.StatusBadRequest, message, "update: ", message, value)
 }
 
 func UpdateHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Accept no method other than Post
 	if r.Method != http.MethodPost {
-		log.Println("update: Non POST request : ", r.Method)
-		http.Error(w, "Only POST request Supported", http.StatusMethodNotAllowed)
+		ErrorRequest(w, http.StatusMethodNotAllowed, "Only POST request Supported",
+			" Update: Non POST request received = "+string(r.Method))
 		return
 	}
 
@@ -120,16 +138,14 @@ func UpdateHandler(w http.ResponseWriter, r *http.Request) {
 	key := string(r.FormValue("api_key"))
 	log.Println("update: received key ", key)
 	if len(key) != MaxApiKey {
-		log.Println("update: No API KEY suppiled ", key)
-		http.Error(w, "No API KEY supplied", http.StatusBadRequest)
+		updateErrorRequest(w, "No API KEY supplied", key)
 		return
 	}
 
 	// Check for the Presence of the Keys
 	group, prs := hash_arr[key]
 	if !prs {
-		log.Println("update: Invalid API KEY suppiled ", key)
-		http.Error(w, "Invalid API KEY supplied", http.StatusBadRequest)
+		updateErrorRequest(w, "Invalid API KEY supplied", key)
 		return
 	}
 
@@ -137,16 +153,14 @@ func UpdateHandler(w http.ResponseWriter, r *http.Request) {
 	dtype := string(r.FormValue("data_type"))
 	log.Println("update: received Data Type as ", dtype)
 	if len(dtype) == 0 {
-		log.Println("update: No Data Type suppiled ", dtype)
-		http.Error(w, "No Data Type supplied", http.StatusBadRequest)
+		updateErrorRequest(w, "No Data Type supplied", dtype)
 		return
 	}
 
 	// Check the Type
 	_, prs = DataSampleTypes[dtype]
 	if !prs {
-		log.Println("update: Invalid Data Type suppiled ", dtype)
-		http.Error(w, "Invalid Data Type supplied", http.StatusBadRequest)
+		updateErrorRequest(w, "Invalid Data Type supplied", dtype)
 		return
 	}
 
