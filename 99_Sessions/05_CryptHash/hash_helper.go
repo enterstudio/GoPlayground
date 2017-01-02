@@ -3,7 +3,9 @@ package main
 import (
 	"crypto/rand"
 	"crypto/sha256"
+	"encoding/base64"
 	"errors"
+	_ "fmt"
 	"golang.org/x/crypto/bcrypt"
 	"golang.org/x/crypto/pbkdf2"
 	"golang.org/x/crypto/scrypt"
@@ -92,3 +94,119 @@ func PBKDF2Hash(password string) ([]byte, []byte, error) {
 
 	return hash, salt, nil
 }
+
+func VerifyScrypt(password string, valid []byte) error {
+
+	// Check if we have the correctly processed data from database
+	if len(valid) < (saltLength + scrypt_KeyLength) {
+		return errors.New(" Wrong Valid key length")
+	}
+
+	// Check the Password length
+	if len(password) == 0 {
+		return errors.New(" Incorrect Password length")
+	}
+
+	// Obtain the pieces from the Valid data
+	salt := make([]byte, saltLength)
+	validhash := make([]byte, scrypt_KeyLength)
+	copy(salt, valid[:saltLength])
+	copy(validhash, valid[saltLength:])
+
+	// Generate the Hash
+	hash, err := scrypt.Key([]byte(password), salt, scrypt_N, scrypt_r, scrypt_p, scrypt_KeyLength)
+	if err != nil {
+		return errors.New(" Unable to generate Scrypt Hash " + err.Error())
+	}
+
+	// Check length equality
+	if len(hash) != len(validhash) {
+		return errors.New(" Error in Length of reported hash")
+	}
+
+	// Check the Slice by looping through
+	for i := range hash {
+		if validhash[i] != hash[i] {
+			return errors.New(" Inequality found at " + string(i) +
+				" In " + base64.RawStdEncoding.EncodeToString(hash))
+		}
+	}
+
+	return nil
+}
+
+func VerifyPBKDF2(password string, valid []byte) error {
+	// Check if we have the correctly processed data from database
+	if len(valid) < (saltLength + pbkdf2_KeyLength) {
+		return errors.New(" Wrong Valid key length")
+	}
+
+	// Check the Password length
+	if len(password) == 0 {
+		return errors.New(" Incorrect Password length")
+	}
+
+	// Obtain the pieces from the Valid data
+	salt := make([]byte, saltLength)
+	validhash := make([]byte, scrypt_KeyLength)
+	copy(salt, valid[:saltLength])
+	copy(validhash, valid[saltLength:])
+
+	// Generate the Hash
+	hash := pbkdf2.Key([]byte(password), salt, pbkdf2_Iteration, pbkdf2_KeyLength, sha256.New)
+
+	// Check length equality
+	if len(hash) != len(validhash) {
+		return errors.New(" Error in Length of reported hash")
+	}
+
+	// Check the Slice by looping through
+	for i := range hash {
+		if validhash[i] != hash[i] {
+			return errors.New(" Inequality found at " + string(i) + " In " + string(hash))
+		}
+	}
+
+	return nil
+}
+
+/* // Need to Verify
+func VerifyBcrypt(password string, valid []byte) error {
+
+	// Check if we have the correctly processed data from database
+	if len(valid) < (saltLength) {
+		return errors.New(" Wrong Valid key length")
+	}
+
+	// Check the Password length
+	if len(password) == 0 {
+		return errors.New(" Incorrect Password length")
+	}
+
+	// Obtain the pieces from the Valid data
+	salt := make([]byte, saltLength)
+	validhash := make([]byte, len(valid) - saltLength)
+	copy(salt, valid[:saltLength])
+	copy(validhash, valid[saltLength:])
+
+	// Generate the Hash
+	hash, err := bcrypt.GenerateFromPassword([]byte(password+string(salt)), bcrypt.DefaultCost)
+	if err != nil {
+		return errors.New(" Unable to generate Bcrypt Hash " + err.Error())
+	}
+
+	// Check length equality
+	if len(hash) != len(validhash) {
+		return errors.New(" Error in Length of reported hash")
+	}
+
+	// Check the Slice by looping through
+	for i := range hash {
+		if validhash[i] != hash[i] {
+			return errors.New(" Inequality found at " + string(i) +
+				" In " + base64.RawStdEncoding.EncodeToString(hash))
+		}
+	}
+
+	return nil
+}*/
