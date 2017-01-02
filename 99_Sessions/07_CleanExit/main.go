@@ -23,9 +23,13 @@ func cleanupFn() {
 // SetIntrCleanup Function used to configure the catching of SIGTERM signal
 //  from OS and add the respective cleanup-function and
 //  proper exit status rather than the default one
+// Warning: This should be used only with a blocked program like the one below
 func SetIntrCleanup(cfn CleanupFn, exitStatus int) {
+	// Setup the Informer Channel
 	c := make(chan os.Signal, 2)
+	// Add the Notification with the Channel
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
+	// Deploy the Go routine and wait for the SIGINT
 	go func() {
 		<-c
 		cfn()
@@ -39,7 +43,7 @@ func main() {
 
 	for {
 		fmt.Println("sleeping...")
-		time.Sleep(10 * time.Second) // or runtime.Gosched() or similar per @misterbee
+		time.Sleep(10 * time.Second)
 	}
 
 }
