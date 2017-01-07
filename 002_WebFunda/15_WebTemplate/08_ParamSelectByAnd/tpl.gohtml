@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Function Try Out</title>
+</head>
+<body>
+
+<h1>Names</h1>
+{{ range .}}
+<p>{{.}}</p>{{ end }}
+
+<h1>Sent to Vanavasa</h1>{{ range .}}{{if .Vanvasa}}
+<p>{{.Name}}</p>{{end}}{{end}}
+
+<h1>Ram's Brother</h1>{{ range .}}{{if eq .Brother "Ram"}}
+<p>{{.Name}}</p>{{end}}{{end}}
+
+<h1>Names other than Krishna</h1>{{ range .}}{{if ne .Name "Krishna"}}
+<p>{{.Name}}</p>{{end}}{{end}}
+
+<h1>Ram's Brother who Accompanied Him in Vanavasa </h1>{{range .}}{{if eq .Brother "Ram" | and .Vanvasa }}
+<p>{{.Name}}</p>{{end}}{{end}}
+
+
+</body>
+</html>
