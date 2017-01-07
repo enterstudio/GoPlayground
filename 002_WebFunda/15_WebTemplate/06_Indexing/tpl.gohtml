@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Function Try Out</title>
+</head>
+<body>
+<p>All Names of Sri Hari:</p>
+<ul>{{range .}}
+    <li>{{ . }}</li>
+    {{ end }}
+</ul>
+<p>{{ index . 0 }} = {{ index . 1 }} = {{ index . 2 }}</p>
+{{/* Template Comment Here */}}
+{{/* `index` function helps to access the particular index of the passed variable*/}}
+</body>
+</html>
