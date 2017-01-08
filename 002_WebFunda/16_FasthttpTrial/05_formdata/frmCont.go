@@ -2,21 +2,84 @@ package main
 
 import (
 	"bytes"
+	"fmt"
+	"github.com/Sirupsen/logrus"
+	"github.com/satori/go.uuid"
 	"github.com/valyala/fasthttp"
+	"strings"
 )
+
+const cookie_Key_name = "message"
+
+func prepForm(ctx *fasthttp.RequestCtx, ckarray []string) {
+	ctx.SetContentType("text/html")
+	ctx.WriteString(`
+		<h1>GET Path</h1>
+		<form method="POST">
+		<h3>Message:</h3>
+	  <input type="text" name="mesg" placeholder="your Message">
+	  <input type="submit">
+		</form><br />
+		<ul>
+		`)
+	if len(ckarray) > 0 {
+		for i := range ckarray {
+			sp := strings.Split(ckarray[i], ":")
+			w := fmt.Sprintf("<li>%s</li>", sp[1])
+			ctx.WriteString(w)
+		}
+	}
+	ctx.WriteString("</ul>")
+}
 
 func frmEpController(ctx *fasthttp.RequestCtx) {
 
-	// Search if we have Slashes (Rune is 2 bytes) - Boolean
-	//spaths := bytes.Split(ctx.Path()[1:], []byte("/"))
+	// Get Cookie Information
+	lastCookie := string(ctx.Request.Header.Cookie(cookie_Key_name))
 
 	switch {
 	case bytes.Compare(ctx.Method(), []byte("GET")) == 0:
-		ctx.WriteString("GET Path")
+		// Log the Request
+		logrus.Info("Frm Get Req " + ctx.RemoteAddr().String())
+		// Create the Post Array
+		if len(lastCookie) > 0 {
+			// Get all the Messages from the Last cookie
+			arr := strings.Fields(lastCookie)
+			// Render form with Processed Messages
+			prepForm(ctx, arr)
+		} else {
+			// Blank form
+			prepForm(ctx, []string{})
+		}
+
 		break
+
 	case bytes.Compare(ctx.Method(), []byte("POST")) == 0:
-		ctx.WriteString("POST Path")
+		// Log the Request
+		logrus.Info("Frm Post Req " + ctx.RemoteAddr().String())
+		// Get the Posted Message field
+		messageValue := string(ctx.PostArgs().Peek("mesg"))
+		if len(messageValue) > 0 {
+			// Create a New UUID
+			s := uuid.NewV4().String()
+			// Attach it to Message to Create the New Cookie Addendum
+			newValue := strings.Join([]string{s, messageValue}, ":")
+			// Add the Values with the Older Cookie Value
+			newValue = strings.Join([]string{lastCookie, newValue}, " ")
+			// Fresh Cookie to be Set
+			var newCookie fasthttp.Cookie
+			newCookie.SetKey(cookie_Key_name)
+			newCookie.SetValue(newValue)
+			newCookie.SetHTTPOnly(true)
+			ctx.Response.Header.SetCookie(&newCookie)
+			// Start the Form Rendering
+			prepForm(ctx, strings.Fields(newValue))
+		} else {
+			// Alternative Path - If the Post request did not have the required value
+			prepForm(ctx, strings.Fields(lastCookie))
+		}
 		break
+
 	default:
 		ctx.Error("Unkon Type"+string(ctx.Method()), fasthttp.StatusBadRequest)
 		break
