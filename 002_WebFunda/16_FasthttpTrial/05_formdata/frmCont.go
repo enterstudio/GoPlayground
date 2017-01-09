@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bytes"
 	"fmt"
 	"github.com/satori/go.uuid"
 	"github.com/valyala/fasthttp"
@@ -44,7 +43,7 @@ func frmEpController(ctx *fasthttp.RequestCtx) {
 	switch {
 
 	// GET Request
-	case bytes.Compare(ctx.Method(), []byte("GET")) == 0:
+	case ctx.IsGet():
 
 		// Create the Post Array
 		if len(lastCookie) > 0 {
@@ -62,10 +61,10 @@ func frmEpController(ctx *fasthttp.RequestCtx) {
 		break
 
 	// POST Request
-	case bytes.Compare(ctx.Method(), []byte("POST")) == 0:
+	case ctx.IsPost():
 
 		// Get the Posted Message field
-		messageValue := string(ctx.PostArgs().Peek("mesg"))
+		messageValue := string(ctx.FormValue("mesg"))
 
 		// Check if we really have Some Message
 		if len(messageValue) > 0 {
