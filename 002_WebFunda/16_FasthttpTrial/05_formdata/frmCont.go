@@ -5,10 +5,15 @@ import (
 	"fmt"
 	"github.com/satori/go.uuid"
 	"github.com/valyala/fasthttp"
+	"net/url"
 	"strings"
 )
 
-const cookie_Key_name = "message"
+const (
+	cookie_Key_name = "message"
+	message_sep     = " "
+	info_sep        = ":"
+)
 
 func prepForm(ctx *fasthttp.RequestCtx, ckarray []string) {
 	ctx.SetContentType("text/html")
@@ -23,7 +28,7 @@ func prepForm(ctx *fasthttp.RequestCtx, ckarray []string) {
 		`)
 	if len(ckarray) > 0 {
 		for i := range ckarray {
-			sp := strings.Split(ckarray[i], ":")
+			sp := strings.Split(ckarray[i], info_sep)
 			w := fmt.Sprintf("<li>%s</li>", sp[1])
 			ctx.WriteString(w)
 		}
@@ -40,8 +45,7 @@ func frmEpController(ctx *fasthttp.RequestCtx) {
 
 	// GET Request
 	case bytes.Compare(ctx.Method(), []byte("GET")) == 0:
-		// Log the Request
-		logger.Info("Frm Get Req " + ctx.RemoteAddr().String())
+
 		// Create the Post Array
 		if len(lastCookie) > 0 {
 			// Get all the Messages from the Last cookie
@@ -53,40 +57,50 @@ func frmEpController(ctx *fasthttp.RequestCtx) {
 			prepForm(ctx, []string{})
 		}
 
+		// Log the Request
+		ctx.Logger().Printf("Cookie = " + lastCookie)
 		break
 
 	// POST Request
 	case bytes.Compare(ctx.Method(), []byte("POST")) == 0:
-		// Log the Request
-		logger.Info("Frm Post Req " + ctx.RemoteAddr().String())
+
 		// Get the Posted Message field
 		messageValue := string(ctx.PostArgs().Peek("mesg"))
+
 		// Check if we really have Some Message
 		if len(messageValue) > 0 {
+
 			// Create a New UUID
 			s := uuid.NewV4().String()
+
+			// URI Compatible values
+			messageValue = url.QueryEscape(messageValue)
+
 			// Attach it to Message to Create the New Cookie Addendum
-			newValue := strings.Join([]string{s, messageValue}, ":")
+			newValue := strings.Join([]string{s, messageValue}, info_sep)
 			// Add the Values with the Older Cookie Value
-			newValue = strings.Join([]string{lastCookie, newValue}, " ")
+			newValue = strings.Join([]string{lastCookie, newValue}, message_sep)
+
 			// Fresh Cookie to be Set
 			var newCookie fasthttp.Cookie
 			newCookie.SetKey(cookie_Key_name)
 			newCookie.SetValue(newValue)
 			newCookie.SetHTTPOnly(true)
 			ctx.Response.Header.SetCookie(&newCookie)
-			// Start the Form Rendering
-			//prepForm(ctx, strings.Fields(newValue))
-		} else {
-			// Alternative Path - If the Post request did not have the message
-			//prepForm(ctx, strings.Fields(lastCookie))
+
 		}
+
 		// Do a Hard redirect after processing the request
 		ctx.Redirect(string(ctx.RequestURI()), fasthttp.StatusOK)
+
+		// Log the Request
+		ctx.Logger().Printf("mesg = %s", messageValue)
+
 		break
 
 	// Unknown Request
 	default:
+		ctx.Logger().Printf("Unknown" + string(ctx.Method()))
 		ctx.Error("Unkon Type"+string(ctx.Method()), fasthttp.StatusBadRequest)
 		break
 	}

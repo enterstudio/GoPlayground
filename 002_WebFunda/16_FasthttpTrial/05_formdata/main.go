@@ -12,8 +12,8 @@ import (
 var (
 	//addr        = flag.String("addr", "localhost:8080", "TCP Address:Port to listen to")
 	compress    = flag.Bool("compress", false, "Whether to enable transparent response compression")
-	HostAddress = ""
-	logger      *log1.Logger
+	hostAddress = ""
+	gLogger     *log1.Logger
 	logdir      string
 	serverip    string
 	serverport  string
@@ -25,7 +25,7 @@ func init() {
 	flag.Parse()
 
 	// Initialize the Logger
-	logger = NewLogger()
+	gLogger = NewLogger()
 
 	// Get Environment to Make the Host IP + Port info
 	serverip = os.Getenv("OPENSHIFT_GO_IP")
@@ -42,7 +42,7 @@ func init() {
 	}
 
 	// Generate the Address Info
-	HostAddress = fmt.Sprintf("%s:%s", serverip, serverport)
+	hostAddress = fmt.Sprintf("%s:%s", serverip, serverport)
 }
 
 func main() {
@@ -57,16 +57,16 @@ func main() {
 	s := &fasthttp.Server{
 		Handler:            h,
 		Name:               "Test Golang Server",
-		Logger:             logger,
+		Logger:             gLogger,
 		MaxConnsPerIP:      5,   // Limit Max Parallel Connections per IP
 		MaxRequestBodySize: 512, // No File Uploads Possible - Disable
 	}
 
-	logger.Println("Starting Server At " + HostAddress)
+	gLogger.Println("Starting Server At " + hostAddress)
 	// Launch an independent Web Server
 	go func() {
-		if err := s.ListenAndServe(HostAddress); err != nil {
-			logger.Fatalf("Error in ListenAndServe: %s", err)
+		if err := s.ListenAndServe(hostAddress); err != nil {
+			gLogger.Fatalf("Error in ListenAndServe: %s", err)
 		}
 	}()
 

@@ -5,16 +5,19 @@ import (
 	"github.com/rifflock/lfshook"
 )
 
+// NewLogger This function creates the proper persistent "gLogger"
+//  This is used in the Main Code to attached this logger globally to the Server
+// Note: this influences the Package level variable "gLogger"
 func NewLogger() *log1.Logger {
-	if logger != nil {
-		return logger
+	if gLogger != nil {
+		return gLogger
 	}
 
-	logger = log1.New()
-	logger.Formatter = new(log1.TextFormatter)
-	logger.Hooks.Add(lfshook.NewHook(lfshook.PathMap{
+	gLogger = log1.New()
+	gLogger.Formatter = new(log1.TextFormatter)
+	gLogger.Hooks.Add(lfshook.NewHook(lfshook.PathMap{
 		log1.InfoLevel:  logdir + "info.log",
 		log1.ErrorLevel: logdir + "error.log",
 	}))
-	return logger
+	return gLogger
 }
