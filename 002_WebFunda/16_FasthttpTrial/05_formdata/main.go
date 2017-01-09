@@ -53,10 +53,19 @@ func main() {
 		h = fasthttp.CompressHandlerLevel(h, fasthttp.CompressBestSpeed)
 	}
 
+	// Create a New Server
+	s := &fasthttp.Server{
+		Handler:            h,
+		Name:               "Test Golang Server",
+		Logger:             logger,
+		MaxConnsPerIP:      5,   // Limit Max Parallel Connections per IP
+		MaxRequestBodySize: 512, // No File Uploads Possible - Disable
+	}
+
 	logger.Println("Starting Server At " + HostAddress)
 	// Launch an independent Web Server
 	go func() {
-		if err := fasthttp.ListenAndServe(HostAddress, h); err != nil {
+		if err := s.ListenAndServe(HostAddress); err != nil {
 			logger.Fatalf("Error in ListenAndServe: %s", err)
 		}
 	}()

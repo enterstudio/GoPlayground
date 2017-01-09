@@ -1,10 +1,12 @@
 package main
 
 import (
+	"github.com/boseji/goboseji"
 	"github.com/valyala/fasthttp"
 	"regexp"
 	"runtime"
 	"strings"
+	"time"
 )
 
 func mainRequestHandler(ctx *fasthttp.RequestCtx) {
@@ -65,4 +67,7 @@ func mainRequestHandler(ctx *fasthttp.RequestCtx) {
 		break
 	}
 
+	// Add Special Time to Response Header - Tail Chained
+	ctx.Response.Header.Add("Time",
+		goboseji.TimeIST(time.Now()).Format("January Monday 02-01-2006 15:04:05.000 MST"))
 }
