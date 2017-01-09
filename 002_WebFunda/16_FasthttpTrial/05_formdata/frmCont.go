@@ -3,7 +3,6 @@ package main
 import (
 	"bytes"
 	"fmt"
-	"github.com/Sirupsen/logrus"
 	"github.com/satori/go.uuid"
 	"github.com/valyala/fasthttp"
 	"strings"
@@ -38,9 +37,11 @@ func frmEpController(ctx *fasthttp.RequestCtx) {
 	lastCookie := string(ctx.Request.Header.Cookie(cookie_Key_name))
 
 	switch {
+
+	// GET Request
 	case bytes.Compare(ctx.Method(), []byte("GET")) == 0:
 		// Log the Request
-		logrus.Info("Frm Get Req " + ctx.RemoteAddr().String())
+		logger.Info("Frm Get Req " + ctx.RemoteAddr().String())
 		// Create the Post Array
 		if len(lastCookie) > 0 {
 			// Get all the Messages from the Last cookie
@@ -54,11 +55,13 @@ func frmEpController(ctx *fasthttp.RequestCtx) {
 
 		break
 
+	// POST Request
 	case bytes.Compare(ctx.Method(), []byte("POST")) == 0:
 		// Log the Request
-		logrus.Info("Frm Post Req " + ctx.RemoteAddr().String())
+		logger.Info("Frm Post Req " + ctx.RemoteAddr().String())
 		// Get the Posted Message field
 		messageValue := string(ctx.PostArgs().Peek("mesg"))
+		// Check if we really have Some Message
 		if len(messageValue) > 0 {
 			// Create a New UUID
 			s := uuid.NewV4().String()
@@ -73,13 +76,16 @@ func frmEpController(ctx *fasthttp.RequestCtx) {
 			newCookie.SetHTTPOnly(true)
 			ctx.Response.Header.SetCookie(&newCookie)
 			// Start the Form Rendering
-			prepForm(ctx, strings.Fields(newValue))
+			//prepForm(ctx, strings.Fields(newValue))
 		} else {
-			// Alternative Path - If the Post request did not have the required value
-			prepForm(ctx, strings.Fields(lastCookie))
+			// Alternative Path - If the Post request did not have the message
+			//prepForm(ctx, strings.Fields(lastCookie))
 		}
+		// Do a Hard redirect after processing the request
+		ctx.Redirect(string(ctx.RequestURI()), fasthttp.StatusOK)
 		break
 
+	// Unknown Request
 	default:
 		ctx.Error("Unkon Type"+string(ctx.Method()), fasthttp.StatusBadRequest)
 		break
