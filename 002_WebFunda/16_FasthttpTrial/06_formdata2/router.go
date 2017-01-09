@@ -19,6 +19,7 @@ func mainRequestHandler(ctx *fasthttp.RequestCtx) {
 	checkPath, _ := regexp.MatchString("^/check", spath)
 	apiPath, _ := regexp.MatchString("^/api", spath)
 	formPath, _ := regexp.MatchString("^/frm", spath)
+	dataPath, _ := regexp.MatchString("^/data", spath)
 
 	// Add config User Values
 	if ctx.IsTLS() {
@@ -60,6 +61,10 @@ func mainRequestHandler(ctx *fasthttp.RequestCtx) {
 	// Trial Form for posting Comments
 	case formPath:
 		frmEpController(ctx)
+		break
+
+	case dataPath:
+		dataEpController(ctx)
 		break
 
 	default:
