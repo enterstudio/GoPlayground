@@ -10,9 +10,9 @@ import (
 )
 
 const (
-	cookie_Key_name = "message"
-	message_sep     = " "
-	info_sep        = ":"
+	cookieKeyName = "message"
+	messageSep    = " "
+	infoSep       = ":"
 )
 
 func prepForm(ctx *fasthttp.RequestCtx, ckarray []string) {
@@ -28,7 +28,7 @@ func prepForm(ctx *fasthttp.RequestCtx, ckarray []string) {
 		`)
 	if len(ckarray) > 0 {
 		for i := range ckarray {
-			sp := strings.Split(ckarray[i], info_sep)
+			sp := strings.Split(ckarray[i], infoSep)
 			w := fmt.Sprintf("<li>%s</li>", sp[1])
 			ctx.WriteString(w)
 		}
@@ -39,7 +39,7 @@ func prepForm(ctx *fasthttp.RequestCtx, ckarray []string) {
 func frmEpController(ctx *fasthttp.RequestCtx) {
 
 	// Get Cookie Information
-	lastCookie := string(ctx.Request.Header.Cookie(cookie_Key_name))
+	lastCookie := string(ctx.Request.Header.Cookie(cookieKeyName))
 
 	switch {
 
@@ -77,13 +77,13 @@ func frmEpController(ctx *fasthttp.RequestCtx) {
 			messageValue = url.QueryEscape(messageValue)
 
 			// Attach it to Message to Create the New Cookie Addendum
-			newValue := strings.Join([]string{s, messageValue}, info_sep)
+			newValue := strings.Join([]string{s, messageValue}, infoSep)
 			// Add the Values with the Older Cookie Value
-			newValue = strings.Join([]string{lastCookie, newValue}, message_sep)
+			newValue = strings.Join([]string{lastCookie, newValue}, messageSep)
 
 			// Fresh Cookie to be Set
 			var newCookie fasthttp.Cookie
-			newCookie.SetKey(cookie_Key_name)
+			newCookie.SetKey(cookieKeyName)
 			newCookie.SetValue(newValue)
 			newCookie.SetHTTPOnly(true)
 			ctx.Response.Header.SetCookie(&newCookie)
