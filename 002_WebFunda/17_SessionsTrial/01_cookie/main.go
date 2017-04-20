@@ -23,6 +23,7 @@ func index(w http.ResponseWriter, r *http.Request) {
 			HttpOnly: true,
 			Path:     "/",
 		}
+		http.SetCookie(w, cookie) // Setting the Cookie
 	}
 	fmt.Println(cookie)
 	fmt.Fprint(w, cookie)
