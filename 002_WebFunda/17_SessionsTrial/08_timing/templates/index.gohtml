@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Index Page</title>
+</head>
+<body>
+
+{{ if .First }}
+UserName {{.UserName}} <br>
+First {{.First}} <br>Last {{.Last}} <br>
+<h1><a href="/bar">go to bar</a></h1>
+<h2><a href="/logout">logout</a></h2>
+{{ else }}
+<h1><a href="/login">Login</a></h1>
+<h2><a href="/signup">Signup</a></h2>
+{{end}}
+
+</body>
+</html>
