@@ -30,7 +30,10 @@ func attachHandler(h *http.ServeMux) {
 }
 
 func root(w http.ResponseWriter, r *http.Request) {
-	w.Header().Add("refresh", "5") // Refresh every 5 seconds
+  // Dev server
+  if Local {
+    w.Header().Add("refresh", "5") // Refresh every 5 seconds
+  }
 	fmt.Fprint(w, `<p>Aum Sri Ganeshay Namh</p> <p>This is an API Server</p>
   <p> - Use GET Request '\\get?key=[Specific Key]' to access the Value stored</p>
 	<p> - Use PUT Request '\\set?key=[New Key] and in body [New Value]' to store the New Key value pair</p>
