@@ -2,10 +2,10 @@ package main
 
 import (
 	"fmt"
+	"github.com/boseji/GoPlayground/002_WebFunda/18_SimpleRestAPIKV/handlers"
+	"github.com/boseji/GoPlayground/002_WebFunda/18_SimpleRestAPIKV/storage"
 	"google.golang.org/appengine"
-	"handlers"
 	"net/http"
-	"storage"
 )
 
 var Local bool

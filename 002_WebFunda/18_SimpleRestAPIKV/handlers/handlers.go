@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"storage"
+	"github.com/boseji/GoPlayground/002_WebFunda/18_SimpleRestAPIKV/storage"
 )
 
 func GetKey(db storage.DB) http.HandlerFunc {
