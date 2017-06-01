@@ -13,6 +13,7 @@ type inMemStore struct {
 type DB interface {
 	Get(key string) ([]byte, error)
 	Set(key string, val []byte) error
+	Del(key string) error
 }
 
 var ErrNotFound = errors.New("Error Not Found")
@@ -36,4 +37,14 @@ func (d *inMemStore) Set(key string, val []byte) error {
 	defer d.m.Unlock()
 	d.db[key] = val
 	return nil
+}
+
+func (d *inMemStore) Del(key string) error {
+	d.m.Lock()
+	defer d.m.Unlock()
+	if _, ok := d.db[key]; ok {
+		delete(d.db, key)
+		return nil
+	}
+	return ErrNotFound
 }

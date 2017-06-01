@@ -1,12 +1,11 @@
 package handlers
 
 import (
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"storage" // For App-engine compile
-	//_ "../storage" // For Editor
-	"errors"
+	"storage"
 )
 
 func GetKey(db storage.DB) http.HandlerFunc {
@@ -85,4 +84,27 @@ func processGet(r *http.Request) (string, error, int) {
 		return "", errors.New("Missing key Name in query string"), http.StatusBadRequest
 	}
 	return key, nil, http.StatusOK
+}
+
+func DelKey(db storage.DB) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodDelete {
+			http.Error(w, "error unsupported request method use Delete", http.StatusBadRequest)
+			return
+		}
+		key := r.URL.Query().Get("key")
+		if key == "" {
+			http.Error(w, "Missing key Name in query string", http.StatusBadRequest)
+			return
+		}
+		err := db.Del(key)
+		if err == storage.ErrNotFound {
+			http.Error(w, "not found", http.StatusNotFound)
+			return
+		} else if err != nil {
+			http.Error(w, fmt.Sprintf("error from db: %s", err), http.StatusInternalServerError)
+			return
+		}
+		w.WriteHeader(http.StatusOK)
+	}
 }
