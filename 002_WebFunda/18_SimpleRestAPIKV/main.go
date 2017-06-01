@@ -31,12 +31,12 @@ func attachHandler(h *http.ServeMux) {
 
 func root(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("refresh", "5") // Refresh every 5 seconds
-	fmt.Fprint(w, "Aum Sri Ganeshay Namh \nThis is an API Server")
-	fmt.Fprint(w, "\n - Use GET Request '\\get?key=<Specific Key>' to access the Value stored")
-	fmt.Fprint(w, "\n - Use PUT Request '\\set?key=<New Key> and in body <New Value>' to store the New Key value pair")
-	fmt.Fprint(w, "\n - Use POST Request '\\set' and in body 'key = <New Key>''value = <New Value>' ")
-	fmt.Fprint(w, "\n     encoded as 'application/x-www-form-urlencoded' to store the New Key value pair")
-	fmt.Fprint(w, "\n - Use DELETE Request '\\del?key=<Specific Key>' to Delete the Key,Value pair")
-	fmt.Fprint(w, "\n - In case the Key,Value pair previously exists they would be overwritten")
-	fmt.Fprint(w, "\n - In case the Key,Value pair does not exist a Notfound message would be issued")
+	fmt.Fprint(w, `<p>Aum Sri Ganeshay Namh</p> <p>This is an API Server</p>
+  <p> - Use GET Request '\\get?key=[Specific Key]' to access the Value stored</p>
+	<p> - Use PUT Request '\\set?key=[New Key] and in body [New Value]' to store the New Key value pair</p>
+	<p> - Use POST Request '\\set' and in body 'key = [New Key]''value = [New Value]'
+	     encoded as 'application/x-www-form-urlencoded' to store the New Key value pair</p>
+	<p> - Use DELETE Request '\\del?key=<Specific Key>' to Delete the Key,Value pair</p>
+	<p> - In case the Key,Value pair previously exists they would be overwritten</p>
+	<p> - In case the Key,Value pair does not exist a Not found message would be issued</p>`)
 }
