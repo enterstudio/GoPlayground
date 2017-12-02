@@ -13,7 +13,14 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	err = tpl.Execute(os.Stdout, []int{1, 2, 3, 4})
+	data := map[string]string{
+		"Hari": `Aum`,
+		"Hare": `Krishna`,
+		"Ram":  `Sri Ram`,
+		"Aum":  `Shanti`,
+	}
+
+	err = tpl.Execute(os.Stdout, data)
 	if err != nil {
 		log.Fatalln(err)
 	}
