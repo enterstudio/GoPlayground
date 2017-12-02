@@ -1,9 +1,9 @@
 package main
 
 import (
-	"golang.org/x/crypto/bcrypt"
-	"fmt"
 	"encoding/base64"
+	"fmt"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func main() {

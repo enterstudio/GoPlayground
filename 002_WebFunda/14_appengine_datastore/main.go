@@ -7,7 +7,7 @@ import (
 	"google.golang.org/appengine"
 	"google.golang.org/appengine/datastore"
 	//"google.golang.org/appengine/log"
-  "golang.org/x/net/context"
+	"golang.org/x/net/context"
 )
 
 type Entity struct {
@@ -21,7 +21,7 @@ func NumTables(ctx context.Context) (int, error) {
 
 func handle(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
-  ctx := appengine.NewContext(r)
+	ctx := appengine.NewContext(r)
 
 	// Find if there are any Tables available
 	l, err := NumTables(ctx)

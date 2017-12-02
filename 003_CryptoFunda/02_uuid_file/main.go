@@ -2,14 +2,14 @@ package main
 
 import (
 	"fmt"
- "github.com/satori/go.uuid"
+	"github.com/satori/go.uuid"
 	"io/ioutil"
 )
 
 func main() {
-	tempuuid:= "bb685881-2bb2-4367-b584-0ed58493d8c7"
+	tempuuid := "bb685881-2bb2-4367-b584-0ed58493d8c7"
 	// Fixed UUID
-	fixuuid,err := ioutil.ReadFile(".uuid-fix")
+	fixuuid, err := ioutil.ReadFile(".uuid-fix")
 	if err != nil {
 		fmt.Println("Creating UUID File ...")
 		fixuuid = []byte(uuid.NewV4().String())
@@ -24,7 +24,7 @@ func main() {
 	fmt.Println("Fixed UUID: ", string(fixuuid))
 
 	fmt.Println("\nGenerate UUID V4 (pure randome): ", uuid.NewV4())
-	uid, _:= uuid.FromString(tempuuid)
+	uid, _ := uuid.FromString(tempuuid)
 
 	name1 := "Test 1"
 	fmt.Println("Constant Input Text: ", name1)
