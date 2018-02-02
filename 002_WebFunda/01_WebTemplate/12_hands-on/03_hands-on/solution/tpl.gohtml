@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>California hotels</title>
+</head>
+<body>
+    <ul style="list-style: none">
+        {{ range . }}
+        <li>
+        <h1> {{ .Name }} </h1>
+        <h3> {{ .Address }} </h3>
+        <h2> {{ .City }} </h2>
+        <h3> {{ .Zip }}</h3>
+        <h3> {{ .Region }} </h3>
+        {{ end }}
+        </li>
+    </ul>
+</body>
+</html>

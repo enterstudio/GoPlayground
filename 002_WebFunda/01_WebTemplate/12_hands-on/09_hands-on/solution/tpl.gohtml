@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Data Read From CSV</title>
+</head>
+
+<body>
+    <table border="1" style="text-align:center;">
+        <tr>
+            {{ range .Headers }}
+            <th>
+                {{ . }}
+            </th>
+            {{ end }}
+        </tr>
+        {{ range .Data }}
+        <tr>
+            {{ range . }}
+            <td>{{.}}</td>
+            {{ end }}
+        </tr>
+        {{ end }}
+    </table>
+</body>
+
+</html>

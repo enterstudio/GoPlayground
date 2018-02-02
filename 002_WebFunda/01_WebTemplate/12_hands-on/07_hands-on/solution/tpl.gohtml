@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Restaurant Menu</title>
+</head>
+<body>
+
+    {{ range .}}
+        <hr>
+        <h1>{{ .Name }}</h1>
+        <h3> {{ .Address }} {{ .City }} {{ .Zip }}</h3>
+        <h3> {{ .Region }} </h3>
+            <h2>Menu</h2>
+            {{ range .Menu }}
+            <h3>{{ .Meal }}</h3>
+            <ul>
+                {{ range .Items }}
+                <li>{{ .Name }} ₹{{ .Cost }}</li>
+                {{ end }}
+            </ul>
+            {{ end }}
+    {{ end }}
+
+    <hr>
+
+</body>
+</html>
