@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Passing In Functions</title>
+</head>
+<body>
+    <h1>Using Upper Case Function</h1>
+    <ul>
+        {{ range . }}
+        <li>{{ uc .Name }}</li>
+        {{ end }}
+    </ul>
+    <h1>Using the First 3 Character function</h1>
+    <ul>
+        {{ range . }}
+        <li>{{ ft .Name}}</li>
+        {{ end }}
+    </ul>
+</body>
+</html>
