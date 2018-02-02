@@ -1,0 +1,40 @@
+{{ define "term_template" }}
+<h2>{{ .Term }}</h2>
+<ul>
+    {{ range .Courses }}
+    <li>
+        Number : {{ .Number }}<br>
+        Name : {{ .Name }}<br>
+        Units: {{ .Units }}
+    </li>
+    {{ end }}
+</ul>
+{{ end }}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+
+{{range .}}
+
+<h1>{{ .AcaYear }}</h1>
+
+{{ if .Fall.Term }}
+{{ template "term_template" .Fall }}
+{{ end }}
+
+{{ if .Spring.Term }}
+{{ template "term_template" .Spring }}
+{{ end }}
+
+{{ if .Summer.Term }}
+{{ template "term_template" .Summer }}
+{{ end }}
+
+{{end}}
+
+</body>
+</html>
