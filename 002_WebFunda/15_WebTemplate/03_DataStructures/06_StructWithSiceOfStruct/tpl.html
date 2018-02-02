@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Passing a Struct containing a Slice of Structs</title>
+</head>
+<body>
+    <h1>Accessing Members of the Data Passed individually</h1>
+    <h2>Freedom Fighters</h2>
+    <ul>
+        {{ range .FreedomFighters }}
+        <li><b>{{ .Name }}</b>- <em>{{ .Quote }}</em></li>
+        {{ end }}
+    </ul>
+    <h2>States</h2>
+    <ul>
+        {{ range .States }}
+        <li>{{ .Name }} has a capital city of {{ .CapitalCity }}</li>
+        {{ end }}
+    </ul>
+</body>
+</html>
