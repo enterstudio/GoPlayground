@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Doing Function Pipeline Math</title>
+</head>
+<body>
+    <h1>Number Itself</h1>
+    <h2>{{ . }}</h2>
+    <h1>sqrt((Number ^ 2) ^ 3)</h1>
+    <h2>{{ . | square | cube | sqrt }}</h2>
+    <h1>sqrt(Number ^ 3)</h1>
+    <h2>{{ . | cube | sqrt }}</h2>
+</body>
+</html>
