@@ -11,15 +11,37 @@ import (
 func handleRedis(conn net.Conn) {
 	// Close connection at the end
 	defer conn.Close()
+	use := `
+In Memory Database
+
+	USE:
+	SET <key> <value>
+	GET <key>
+	DEL <key>
+
+	Example:
+	SET fav chocolate
+	GET fav				
+
+
+`
 
 	// Define Redis store
 	store := make(map[string]string)
+
+	// Print the Usage
+	io.WriteString(conn, use)
 
 	// Create the Scanner
 	scan := bufio.NewScanner(conn)
 
 	for scan.Scan() {
 		line := scan.Text()
+
+		// Dont Process Empty Lines
+		if len(line) == 0 {
+			continue
+		}
 
 		// Break it into fields
 		fld := strings.Fields(line)
@@ -42,7 +64,7 @@ func handleRedis(conn net.Conn) {
 				delete(store, fld[1])
 			}
 		default:
-			io.WriteString(conn, " Usage: <GET|SET|DEL> Key <Value>")
+			io.WriteString(conn, use)
 		}
 		// Finally a Return in the endl
 		io.WriteString(conn, "\r\n")
