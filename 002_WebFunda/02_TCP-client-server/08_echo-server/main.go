@@ -33,11 +33,11 @@ func handle(conn net.Conn) {
 }
 
 func main() {
-	link, err := net.Listen("tcp", ":9000")
+	link, err := net.Listen("tcp", ":8080")
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("Server Started on port 9000")
+	fmt.Println("Server Started on port 8080")
 	defer link.Close()
 
 	for {

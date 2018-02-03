@@ -99,14 +99,14 @@ func handlehttp(conn net.Conn) {
 }
 func main() {
 
-	server, err := net.Listen("tcp", ":9000")
+	server, err := net.Listen("tcp", ":8080")
 	if err != nil {
 		log.Fatalln(err.Error())
 	}
 
 	defer server.Close()
 
-	log.Println(" Server started on localhost:9000 ")
+	log.Println(" Server started on localhost:8080 ")
 	for {
 		conn, err := server.Accept()
 		if err != nil {
