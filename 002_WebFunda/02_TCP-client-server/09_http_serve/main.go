@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"bytes"
+	"errors"
 	"fmt"
 	"log"
 	"net"
@@ -112,14 +113,15 @@ func responseHTTP(conn net.Conn) {
 // ProcCtx is a data structure to store the TCP
 //  Connection information for an HTTP request
 type ProcCtx struct {
-	Connection net.Conn                  // Handle of the TCP Connection
-	Head       bytes.Buffer              // Request Storage
-	URI        string                    // URI in the Current Request
-	Method     string                    // Method of the Current Reqest
-	Headers    map[string]string         // Headers processed from the Current Request
-	Lines      int                       // Number of Lines in the Current Request
-	Handles    map[string]func(*ProcCtx) // List of Handlers for specific URI
-	Debug      bool                      // In case Debug mode is Enabled to do Logging
+	Connection net.Conn                        // Handle of the TCP Connection
+	Request    bytes.Buffer                    // Request Storage
+	Response   bytes.Buffer                    // Response Storage
+	URI        string                          // URI in the Current Request
+	Method     string                          // Method of the Current Reqest
+	Headers    map[string]string               // Headers processed from the Current Request
+	Lines      int                             // Number of Lines in the Current Request
+	Handles    map[string]func(*ProcCtx) error // List of Handlers for specific URI
+	Debug      bool                            // In case Debug mode is Enabled to do Logging
 }
 
 // NewProcCtx is function that creates a new ProcCtx value using the
@@ -140,7 +142,7 @@ func (p *ProcCtx) processRequest() {
 	scanner := bufio.NewScanner(p.Connection)
 	for scanner.Scan() && p.Lines < 20 {
 		ln := scanner.Text()
-		p.Head.WriteString(ln)
+		p.Request.WriteString(ln)
 		if len(ln) == 0 {
 			break
 		}
@@ -175,4 +177,60 @@ func (p *ProcCtx) processRequest() {
 		log.Printf(" Total Lines: %d", p.Lines)
 		log.Println("---- DEBUG log for processRequest() [ End ] ----")
 	}
+}
+
+// Execute is used to process and respond to the HTTP requests
+func (p *ProcCtx) Execute(conn net.Conn, isAutoClose bool) error {
+	var err error
+
+	if p.Debug {
+		log.Println("---- DEBUG log for Execute() [Begin] ----")
+	}
+
+	// if the New Connection is provided
+	if conn != nil {
+		p.Connection = conn
+	}
+
+	// Not Properly Assigned
+	if p.Connection == nil {
+		return errors.New("Connection Parameters not Initialzed")
+	}
+
+	// In case we have AutoClose enabled
+	if isAutoClose {
+		defer p.Connection.Close()
+		err = p.Connection.SetDeadline(time.Now().Add(10 * time.Second))
+		if err != nil {
+			p.Connection.Close() // Force Close
+			return err
+		}
+	}
+
+	// Run the Processing Engine to Obtain the Request
+	p.processRequest()
+
+	// Get the Handler for the Specific URI
+	handler, ok := p.Handles[p.URI]
+	if ok {
+		err = handler(p)
+	} else {
+		// 404 Generic
+		message := "404 not found"
+		response := fmt.Sprintf("HTTP/1.1 404 OK\r\n")
+		response += fmt.Sprintf("Content-Length: %d\r\n", len(message))
+		response += fmt.Sprintf("Content-Type: text/plain\r\n")
+		response += fmt.Sprintf("\r\n")
+		p.Response.WriteString(response) // Store for next use
+		fmt.Fprint(conn, response)
+	}
+
+	if p.Debug {
+		log.Printf(" Process Errors: %s", err.Error())
+		log.Printf(" Response: %q", p.Response.String())
+		log.Println("---- DEBUG log for Execute() [ End ] ----")
+	}
+
+	// Return the Result
+	return err
 }
