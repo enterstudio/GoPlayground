@@ -5,7 +5,7 @@ import (
 	"text/template"
 )
 
-var Details = []struct {
+var details = []struct {
 	Name    string
 	Yuga    string
 	Vanvasa bool
@@ -19,7 +19,7 @@ var Details = []struct {
 
 func main() {
 	tpl := template.Must(template.New("").ParseFiles("tpl.gohtml"))
-	err := tpl.ExecuteTemplate(os.Stdout, "tpl.gohtml", Details)
+	err := tpl.ExecuteTemplate(os.Stdout, "tpl.gohtml", details)
 	if err != nil {
 		panic(err)
 	}

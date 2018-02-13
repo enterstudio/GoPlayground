@@ -6,6 +6,7 @@ import (
 	"text/template"
 )
 
+// Page is of type struct which helps to enclose the data being sent to the web template
 type Page struct {
 	Title   string
 	Heading string
