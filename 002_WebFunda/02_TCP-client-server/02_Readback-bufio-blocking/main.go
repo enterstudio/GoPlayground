@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"log"
 	"net"
-	"sync"
 )
 
 func main() {
@@ -13,20 +12,17 @@ func main() {
 		log.Panicln(err)
 	}
 	defer listener.Close()
-	var wg sync.WaitGroup
 	log.Println(" Server Started at 8080")
 	for {
 		conn, err := listener.Accept()
 		if err != nil {
 			log.Println(err)
 		}
-		wg.Add(1)
-		go handle(conn, wg)
+		go handle(conn)
 	}
-	wg.Wait()
 }
 
-func handle(conn net.Conn, wg sync.WaitGroup) {
+func handle(conn net.Conn) {
 	defer conn.Close()
 	scan := bufio.NewScanner(conn)
 	data := ""
@@ -39,5 +35,4 @@ func handle(conn net.Conn, wg sync.WaitGroup) {
 	// Does Not Reach Here Due to Scan Line Running
 	log.Println("Done with the Connection")
 	conn.Write([]byte("Done"))
-	wg.Done()
 }
