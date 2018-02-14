@@ -3,6 +3,12 @@
 This program is specifically shaped to mimic the example shown
 by Todd Mcleod for the HTTP Mux
 
+Special Mention of the Particular Video:
+https://www.udemy.com/go-programming-language/learn/v4/t/lecture/6027314?start=0
+
+This is Section 3: Creating your own server
+Video 28. TCP server - HTTP multiplexer
+
 */
 package main
 
