@@ -18,6 +18,6 @@ func main() {
 	http.HandleFunc("/", serveRoot)
 	http.HandleFunc("/aum/", serveAum)
 
-	log.Println(" Starting Server on Port 9000")
-	log.Fatalln(http.ListenAndServe(":9000", nil))
+	log.Println(" Starting Server on Port 8080")
+	log.Fatalln(http.ListenAndServe(":8080", nil))
 }

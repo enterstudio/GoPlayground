@@ -7,7 +7,7 @@ import (
 )
 
 func serveRoot(res http.ResponseWriter, req *http.Request) {
-	io.WriteString(res, "Aum Sri Ganesh !")
+	io.WriteString(res, "Aum Sri Ganeshay Namh !")
 }
 
 func serveAum(res http.ResponseWriter, req *http.Request) {
@@ -19,6 +19,6 @@ func main() {
 	mux.HandleFunc("/", serveRoot)
 	mux.HandleFunc("/aum/", serveAum)
 
-	log.Println(" Starting Server on Port 9000")
-	log.Fatalln(http.ListenAndServe(":9000", mux))
+	log.Println(" Starting Server on Port 8080")
+	log.Fatalln(http.ListenAndServe(":8080", mux))
 }
