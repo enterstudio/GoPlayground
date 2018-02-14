@@ -47,7 +47,7 @@ func init() {
 		log.Fatalln(err)
 	}
 	// Create Hashes for API Keys
-	fmt.Println("\n\n ... Generating API Keys for groups ...\n")
+	fmt.Println("\n\n ... Generating API Keys for groups ...")
 	for i := 1; i < (MaxGroups + 1); i++ {
 		h := sha1.New()
 		s := fmt.Sprintf("Group %d", i)
@@ -56,7 +56,7 @@ func init() {
 		hash_arr[c] = s
 		fmt.Printf(" %s = %s\n", s, c)
 	}
-	fmt.Println("\n VV All Done ! VV \n\n")
+	fmt.Println("\n\n VV All Done ! VV ")
 }
 
 func ErrorRequest(w http.ResponseWriter, code int, message string, more ...string) {
@@ -73,20 +73,20 @@ func ViewHandler(w http.ResponseWriter, r *http.Request) {
 	// Get the URI
 	loc := html.EscapeString(r.URL.Path)
 	if loc == "/view" {
-		ErrorRequest(w, http.StatusUnauthorized, "invlid request",
-			" view: Unknow path access ")
+		ErrorRequest(w, http.StatusUnauthorized, "invalid request",
+			" view: Unknown path access ")
 		return
 	}
 	// Strip the Prefix
 	loc = strings.TrimLeft(loc, "/view/")
 	// Reject the No Names and multiple slash inputs
 	if len(loc) == 0 || strings.Index(loc, "/") != -1 {
-		ErrorRequest(w, http.StatusNotAcceptable, "invlid request",
+		ErrorRequest(w, http.StatusNotAcceptable, "invalid request",
 			"view: Error - Incorrect ID = ", loc)
 		return
 	}
 
-	// If all is ok then Begin porcessing
+	// If all is ok then Begin processing
 
 	s := fmt.Sprintf("Hello, %q", loc)
 
