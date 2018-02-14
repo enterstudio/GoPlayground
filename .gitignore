@@ -26,3 +26,4 @@ _testmain.go
 #IntelliJ IDEA files
 GoPlayground.iml
 .idea
+.vscode
