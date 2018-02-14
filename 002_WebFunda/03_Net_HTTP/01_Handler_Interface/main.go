@@ -6,8 +6,10 @@ import (
 	"net/http"
 )
 
+// For getting to implement the http.Handler interface
 type myHandler int
 
+// ServeHTTP implentation signature
 func (h myHandler) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 	io.WriteString(res, "Aum Sri Ganeshay Namh !")
 }

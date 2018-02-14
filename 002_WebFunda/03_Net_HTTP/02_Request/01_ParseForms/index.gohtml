@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Input Form</title>
+</head>
+<body>
+    {{ if .}}
+    <main>
+        <p><strong>Variable Names</strong> (Identifiers) and <em>Values</em>:</p>
+        {{ range $key, $value := .}}
+        <p><strong>{{ $key }}</strong></p>
+        <ul>{{ range $value }} <li><em>{{ . }}</em></li>{{ end }}</ul>
+        {{ end }}
+    </main>
+    {{ end }}
+    <form action="/" method="POST">
+    <label for="firstName">First Name</label>
+    <input type="text" name="fname" id="firstName" 
+    placeholder="Your First Name" autocomplete="off">
+    <input type="submit" value="Submit Form">
+    </form>
+</body>
+</html>
