@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Request Details</title>
+</head>
+<body>
+    <main>
+        {{ if .Method }}<p>Method : {{ .Method }}</p>{{ end }}
+        {{ if .ContentLength }}<p>Content Length : {{ .ContentLength }}</p>{{ end }}
+        {{ if .URL }} <p>The Request URL:</p>
+            <ul>
+                <li>Scheme : {{ .URL.Scheme }}</li>
+                <li>Opaque : {{ .URL.Opaque }}</li>
+                <li>Host : {{ .URL.Host }}</li>
+                <li>Path : {{ .URL.Path }}</li>
+                <li>RawPath: {{ .URL.RawPath }}</li>
+                <li>ForceQuery: {{ .URL.ForceQuery }}</li>
+                <li>RawQuery: {{ .URL.RawQuery }}</li>
+                <li>Fragment: {{ .URL.Fragment }}</li>
+            </ul>
+        {{ end }}
+        {{ if .Submissions }}
+            <h2>Submitted Values</h2>
+            <p><strong>Variable Names</strong> (Identifiers) and <em>Values</em>:</p>
+            {{ range $key, $value := .Submissions}}
+            <p><strong>{{ $key }}</strong></p>
+            <ul>{{ range $value }} <li><em>{{ . }}</em></li>{{ end }}</ul>
+            {{ end }}
+        {{ end }}
+        {{ if .Header }}
+            <h2>Headers</h2>
+            {{ range $key, $value := .Header}}
+            <p>{{ $key }} :</p>
+            <ul>{{ range $value }} <li><em>{{ . }}</em></li>{{ end }}</ul>
+            {{ end }}
+        {{ end }}
+    </main>
+    <h2>POST Form</h2>
+    <form action="/" method="POST">
+    <label for="firstName">First Name</label>
+    <input type="text" name="fname" id="firstName" 
+    placeholder="Your First Name" autocomplete="off">
+    <input type="submit" value="Submit Form">
+    </form>
+    <h2>GET Form</h2>
+    <form action="/">
+    <label for="firstName">First Name</label>
+    <input type="text" name="fname" id="firstName" 
+    placeholder="Your First Name" autocomplete="off">
+    <input type="submit" value="Submit Form">
+    </form>
+</body>
+</html>
