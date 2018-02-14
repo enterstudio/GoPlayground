@@ -6,15 +6,14 @@ import (
 	"net/http"
 )
 
-type MyHandler int
+type myHandler int
 
-func (h MyHandler) ServeHTTP(res http.ResponseWriter, req *http.Request) {
+func (h myHandler) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 	io.WriteString(res, "Aum Sri Ganeshay Namh !")
 }
 
 func main() {
-
-	var h MyHandler
-	log.Println("Starting Server on Port 9000")
-	log.Fatalln(http.ListenAndServe(":9000", h))
+	var h myHandler
+	log.Println("Starting Server on Port 8080")
+	log.Fatalln(http.ListenAndServe(":8080", h))
 }
