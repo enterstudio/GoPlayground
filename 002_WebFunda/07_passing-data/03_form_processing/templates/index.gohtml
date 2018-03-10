@@ -1,0 +1,13 @@
+{{ template "head" }}
+
+<form action="/" method="post"><input type="text" name="first" placeholder="First Name"><br>
+    <input type="text" name="last" placeholder="Last Name"><br>
+    Subscribe: <input type="checkbox" name="subscribe" value="on"><br>
+    <input type="submit">
+</form>
+
+{{ if .FirstName }}<h1>First Name: {{ .FirstName }}</h1>{{ end }}
+{{ if .LastName }}<h1>Last Name: {{ .LastName }}</h1>{{ end }}
+<h1>Subscription: {{ .Subscribe }}</h1>
+
+{{ template "foot" }}
