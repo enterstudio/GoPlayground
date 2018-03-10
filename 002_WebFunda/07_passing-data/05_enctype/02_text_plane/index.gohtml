@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Default Form EncType</title>
+</head>
+<body>
+    <h1>Input Form</h1>
+    <!-- Not Recommended  -->
+    <form action="/" method="post" enctype="text/plain">
+    <!--  -->
+    <label for="first">First Name</label>
+        <input type="text" name="fname" id="first"><br>
+        <label for="Last">Last Name</label>
+        <input type="text" name="lname" id="last"><br>
+        <label for="check">CheckBox</label>
+        <input type="checkbox" name="chk" id="check"><br>
+        <input type="submit">
+    </form>
+    <h1>Data Received</h1>
+    <pre>{{.}}</pre>
+</body>
+</html>
