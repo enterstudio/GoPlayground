@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{{ .Title }}</title>
+</head>
+<body>
+    <h1>{{ .Title }}</h1>
+    {{ if .Forms }}
+    <form action="{{ .Location }}" method="{{ .Method }}">
+        <label for="name">Your Full Name :</label>
+        <input type="text" name="na" id="name">
+        <br>
+        <label for="profession">Your Profession</label>
+        <input type="text" name="prof" id="profession">
+        <br>
+        <input type="submit">
+    </form>
+    <a href="/">Back to Home</a>
+    {{ else }}
+        <a href="/getform">Get Form</a><br>
+        <a href="/postform">Post Form</a><br>
+        <h2>Sent Data</h2>
+        <pre> {{ .Data }} </pre>
+    {{ end }}
+</body>
+</html>
