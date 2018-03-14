@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/nu7hatch/gouuid"
+	"github.com/satori/go.uuid"
 	"io"
 	"log"
 	"net/http"
@@ -16,6 +16,8 @@ func serveRoot(res http.ResponseWriter, req *http.Request) {
 		cookie = &http.Cookie{
 			Name:  "session-id",
 			Value: id.String() + " email=dev@email.com" + " JSON data",
+			// Secure: true,
+			HttpOnly: true, // No Javascript access
 		}
 		http.SetCookie(res, cookie)
 	}
@@ -27,6 +29,6 @@ func main() {
 
 	http.HandleFunc("/", serveRoot)
 	http.Handle("/favicon.ico", http.NotFoundHandler()) // Ignore the Fav Ico handler
-	log.Println(" Starting Server on Port 9000")
-	log.Fatalln(http.ListenAndServe(":9000", nil))
+	log.Println(" Starting Server on Port 8080")
+	log.Fatalln(http.ListenAndServe(":8080", nil))
 }
