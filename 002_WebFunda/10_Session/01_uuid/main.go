@@ -1,10 +1,11 @@
 package main
 
 import (
-	"github.com/satori/go.uuid"
 	"io"
 	"log"
 	"net/http"
+
+	"github.com/satori/go.uuid"
 )
 
 func serveRoot(res http.ResponseWriter, req *http.Request) {
