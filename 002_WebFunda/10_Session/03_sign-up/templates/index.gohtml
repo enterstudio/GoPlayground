@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Home Page</title>
+</head>
+
+<body>
+    {{ if .First }}
+    <div>
+        <h2>Welcome</h2>
+        <p>First Name: {{ .First }}</p>
+        <p>Last Name: {{ .Last }}</p>
+        <p>Email: {{ .UserName }}</p>
+    </div>
+    {{ else }}
+    <h2>
+        <a href="/signup">Sign up</a>
+    </h2>
+    {{ end }}
+    <div>
+        <a href="/details">Go to Details</a>
+    </div>
+</body>
+
+</html>
