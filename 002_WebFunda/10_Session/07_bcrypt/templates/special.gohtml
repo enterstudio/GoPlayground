@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Special Page</title>
+</head>
+<body>
+    {{ if .First }}
+    <h1>Welcome to Your Special Page</h1>
+    <h2>{{ .First }}&nbsp;{{ .Last }}</h2>
+    <div><a href="/logout">Logout</a></div>
+    {{ end }}
+    <div><a href="/">Go back Home</a></div>
+</body>
+</html>
