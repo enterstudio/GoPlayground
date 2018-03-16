@@ -31,6 +31,7 @@ func main() {
 	http.HandleFunc("/login", login)
 	http.HandleFunc("/signup", signup)
 	http.HandleFunc("/details", details)
+	http.HandleFunc("/logout", logout)
 	log.Println("Starting server on 8080")
 	log.Fatalln(http.ListenAndServe(":8080", nil))
 }
@@ -135,4 +136,21 @@ func details(w http.ResponseWriter, r *http.Request) {
 	}
 	u := getUserFromSession(r)
 	tmpl.ExecuteTemplate(w, "details.gohtml", u)
+}
+
+func logout(w http.ResponseWriter, r *http.Request) {
+	if !alreadySignedIn(r) {
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		return
+	}
+	u := getUserFromSession(r)
+	delete(dbSessions, u.UserName)
+	c := &http.Cookie{
+		Name:   cookieName,
+		Value:  "",
+		MaxAge: -1,
+	}
+	http.SetCookie(w, c)
+
+	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
