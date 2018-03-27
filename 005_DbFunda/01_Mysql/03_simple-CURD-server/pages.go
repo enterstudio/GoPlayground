@@ -1,6 +1,8 @@
 package main
 
-import "net/http"
+import (
+	"net/http"
+)
 
 type pageData struct {
 	TableCreated bool
@@ -8,6 +10,24 @@ type pageData struct {
 	Heading      string
 	Rec          []string
 	Recs         [][]string
+}
+
+type formField struct {
+	present bool
+	value   string
+	field   string
+}
+
+func checkField(key string, r *http.Request) formField {
+	var f formField
+	f.field = key
+	f.value = r.FormValue(key)
+	if len(f.value) != 0 {
+		f.present = true
+	} else {
+		f.present = false
+	}
+	return f
 }
 
 func root(w http.ResponseWriter, r *http.Request) {
@@ -67,7 +87,15 @@ func findRecord(w http.ResponseWriter, r *http.Request) {
 	}
 	pgData := pageData{tableCreated,
 		"Find Records", "Finding Records of Interest", nil, nil}
-	tmpl.ExecuteTemplate(w, "find.gohtml", pgData)
+	var err error
+	pgData.Recs, err = dbsearchProcess(r)
+	if err == nil {
+		pgData.Rec = record{}.fields()
+		tmpl.ExecuteTemplate(w, "find.gohtml", pgData)
+	} else {
+		check(err)
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+	}
 }
 
 func updateRecord(w http.ResponseWriter, r *http.Request) {

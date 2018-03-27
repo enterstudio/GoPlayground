@@ -45,6 +45,12 @@ h2 {
     padding-right: 5px;
 }
 
+.spec1 {
+    font-size: 1.2rem;
+    font-weight: bolder;
+    padding: 5px 10px;
+}
+
 table{
     text-align: center;
 }
