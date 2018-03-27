@@ -1,0 +1,76 @@
+html, body, h1, h2, h3, div, ul, li, ol {
+    margin: 0;
+    border: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+body {
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
+    height: 96vh;
+    margin: 2vh;
+    border: 5px solid blue;
+    border-radius: 1rem;
+}
+h1 {
+    padding: 1rem;
+}
+
+.header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+h2 {
+    padding: 0.6rem;
+}
+
+.formfield div {
+    display: flex;
+    justify-content: space-between;
+    padding: 3px;
+}
+
+.formfield label {
+    display: inline-block;
+    padding-right: 5px;
+}
+
+table{
+    text-align: center;
+}
+
+.hmenu {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 8px;    
+}
+
+.hmenu button {
+    padding: 4px;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.hold {
+    position: absolute;
+    top: 85vh;
+    display: flex;
+    flex-flow: row;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    padding: 0.5rem 0.5rem 0.8rem 0.5rem;
+    border-bottom: 2px solid gray;
+    border-top: 2px solid gray;
+}

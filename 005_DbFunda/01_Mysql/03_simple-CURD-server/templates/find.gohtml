@@ -1,0 +1,10 @@
+{{ template "header" . }}
+<form action="/find" method="post" class="formfield">
+    {{/* div>label[for=cidfield]{Customer ID}+input:number[id=cidfield name=cid] */}}
+    <div><label for="cidfield">Customer ID</label><input type="number" name="cid" id="cidfield" placeholder="ID Number"></div>
+    <div><label for="cnamefield">Customer Name</label><input type="text" name="cname" id="cnamefield" placeholder="Name String"></div>
+    <div><label for="cpointsfield">Customer Poinuts</label><input type="number" name="cpoints" id="cpointsfield" placeholder="Number of Points"></div>
+    <p>You can leave out which ever field yoare unsure of. Instead just try to fill at least one of the above fields</p>
+    <div style="align-content: center; justify-content: center;"><input type="submit" value="Find"></div>
+</form>
+  {{ template "footer" . }}

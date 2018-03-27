@@ -1,0 +1,52 @@
+{{ define "menu" }}
+    <div class="hold">
+        <!-- <h2>Operations:</h2> -->
+        <form method="post" action="/" class="hmenu">
+            <button type="submit">Home</button>
+        </form>
+        {{ if not .TableCreated }}
+        <form method="post" action="/create" class="hmenu">
+            <button type="submit">Create Table</button>
+        </form>
+        {{ else }}
+        <form method="post" action="/readall" class="hmenu">
+            <button type="submit">Read all Records</button>
+        </form>
+        <form method="post" action="/find" class="hmenu">
+            <button type="submit">Find Records</button>
+        </form>
+        <form method="post" action="/update" class="hmenu">
+            <button type="submit">Update Records</button>
+        </form>
+        <form method="post" action="/delete" class="hmenu">
+            <button type="submit">Delete Records</button>
+        </form>
+        <form method="post" action="/drop" class="hmenu">
+            <button type="submit">Delete Table</button>
+        </form>
+        {{ end }}
+    </div>
+{{ end }}
+
+{{ define "header" }}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{{ .Title }}</title>
+    <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+
+<body>
+    <h1 class="header">{{ .Heading }}</h1>
+{{ end }}
+
+{{ define "footer" }}
+    {{ template "menu" . }}
+</body>
+
+</html>
+{{ end }}
