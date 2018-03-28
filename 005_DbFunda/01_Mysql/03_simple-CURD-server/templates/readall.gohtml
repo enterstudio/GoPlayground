@@ -1,16 +1,5 @@
 {{ template "header" .}}
-    {{ if not .Recs }}
-    <h2>no records</h2>
-    {{ else }}
-        <table border="1">
-        <tr>{{ range $k,$v := .Rec }}<th>{{ $v }}</th>{{ end }}</tr>
-        {{ range .Recs }}
-        <tr>
-            {{ range $k, $v := . }}
-            <td>{{ $v }}</td>
-            {{ end }}
-        </tr>
-        {{ end }}
-        </table>
-    {{ end }}
+    {{ template "start_atf" . }}
+    {{ template "records" . }}
+    {{ template "end_atf" . }}
     {{ template "footer" . }}

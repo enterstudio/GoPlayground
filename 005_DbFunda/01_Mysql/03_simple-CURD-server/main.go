@@ -51,7 +51,10 @@ func init() {
 	flag.Parse()
 
 	// Database
-	connectDatabase()
+	err := connectDatabase()
+	if err != nil {
+		log.Fatalln(err)
+	}
 }
 
 func main() {

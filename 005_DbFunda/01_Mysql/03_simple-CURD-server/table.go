@@ -10,8 +10,16 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-// Table Name
-const tableName = "customer_trial"
+const (
+	// Table Name
+	tableName = "customer_trial"
+)
+
+var (
+	// Fields in the Table
+	tableFields     = [...]string{"cID", "cName", "cPoints"}
+	tableFieldsForm = [...]string{"cid", "cname", "cpoints"}
+)
 
 // Data Record
 type record struct {
@@ -36,7 +44,7 @@ func (p record) fields() []string {
 	return m
 }
 
-func connectDatabase() {
+func connectDatabase() error {
 	var err error
 	connstr := os.Getenv("DB_CONNECTION")
 	if len(connstr) == 0 {
@@ -56,10 +64,14 @@ Need to Setup Environment Variable 'DB_CONNECTION'
 	db, err = sql.Open("mysql", connstr)
 	if err != nil {
 		log.Fatalln(err)
+		return err
 	}
 	err = db.Ping()
 	check(err)
-	log.Println("Database connection Successful")
+	if err == nil {
+		log.Println("Database connection Successful")
+	}
+	return err
 }
 
 func disconnectDatabase() {
@@ -103,62 +115,41 @@ func dbTableDrop() error {
 	return nil
 }
 
-func dbTableReadAll() ([][]string, error) {
-	stmt, err := db.Prepare(`SELECT * FROM ` + tableName)
-	check(err)
-	defer stmt.Close()
-	rows, err := stmt.Query()
-	if err != nil {
-		return nil, err
-	}
-
-	arr := make([][]string, 0, 10)
-	for rows.Next() {
-		var r record
-		err = rows.Scan(&r.cID, &r.cName, &r.cPoints)
-		check(err)
-		log.Printf(" [db] Record # %d\t%s\t%d", r.cID, r.cName, r.cPoints)
-		arr = append(arr, r.get())
-	}
-	log.Println(" [db] Reading Full Table Successful")
-	return arr, nil
-}
-
 func check(err error) {
 	if err != nil {
 		log.Println(err)
 	}
 }
 
-func formFieldMap(r *http.Request) map[string]formField {
+func db_formFieldMap(r *http.Request) map[string]formField {
 
 	fields := make(map[string]formField, 3)
 
-	fields["cID"] = checkField("cid", r)
-	fields["cName"] = checkField("cname", r)
-	fields["cPoints"] = checkField("cpoints", r)
+	for i, _ := range tableFields {
+		fields[tableFields[i]] = checkField(tableFieldsForm[i], r)
+	}
 
 	return fields
 }
 
-func searchStmt(fields map[string]formField) string {
+func db_searchStmt(fields map[string]formField) string {
 
 	stm := `SELECT * FROM ` + tableName
 
-	if fields["cID"].present {
+	if fields["cID"].Present {
 		stm += " WHERE cID=? "
 	}
 
-	if fields["cName"].present {
-		if !fields["cID"].present {
+	if fields["cName"].Present {
+		if !fields["cID"].Present {
 			stm += " WHERE cName=?"
 		} else {
 			stm += " AND cName=?"
 		}
 	}
 
-	if fields["cPoints"].present {
-		if !fields["cID"].present && !fields["cName"].present {
+	if fields["cPoints"].Present {
+		if !fields["cID"].Present && !fields["cName"].Present {
 			stm += " WHERE cPoints=?"
 		} else {
 			stm += " AND cPoints=?"
@@ -168,7 +159,7 @@ func searchStmt(fields map[string]formField) string {
 	return stm
 }
 
-func dbExeQuery(stm string, params ...interface{}) ([][]string, error) {
+func db_exeQuery(stm string, params ...interface{}) ([][]string, error) {
 
 	stmt, err := db.Prepare(stm)
 	check(err)
@@ -199,32 +190,47 @@ func dbExeQuery(stm string, params ...interface{}) ([][]string, error) {
 	return arr, nil
 }
 
-func dbsearchProcess(r *http.Request) ([][]string, error) {
+func dbSearch(r *http.Request) (pageData, error) {
+	var pdData pageData
+	pdData.Finfo = db_formFieldMap(r)
+	stm := db_searchStmt(pdData.Finfo)
+	fields := pdData.Finfo
 
-	fields := formFieldMap(r)
-	stm := searchStmt(fields)
+	log.Println(" Executing statement -", stm)
+
+	var err error
+
+	if fields["cID"].Present && fields["cName"].Present && fields["cPoints"].Present {
+		pdData.Recs, err = db_exeQuery(stm, fields["cID"].Value, fields["cName"].Value, fields["cPoints"].Value)
+	} else if fields["cID"].Present && fields["cName"].Present {
+		pdData.Recs, err = db_exeQuery(stm, fields["cID"].Value, fields["cName"].Value)
+	} else if fields["cName"].Present && fields["cPoints"].Present {
+		pdData.Recs, err = db_exeQuery(stm, fields["cName"].Value, fields["cPoints"].Value)
+	} else if fields["cID"].Present && fields["cPoints"].Present {
+		pdData.Recs, err = db_exeQuery(stm, fields["cID"].Value, fields["cPoints"].Value)
+	} else if fields["cID"].Present {
+		pdData.Recs, err = db_exeQuery(stm, fields["cID"].Value)
+	} else if fields["cName"].Present {
+		pdData.Recs, err = db_exeQuery(stm, fields["cName"].Value)
+	} else if fields["cPoints"].Present {
+		pdData.Recs, err = db_exeQuery(stm, fields["cPoints"].Value)
+	} else {
+		pdData.Recs, err = db_exeQuery(stm)
+	}
+
+	return pdData, err
+}
+
+func dbReadAll(r *http.Request) ([][]string, error) {
+	fields := db_formFieldMap(r)
+	stm := db_searchStmt(fields)
 
 	log.Println(" Executing statement -", stm)
 	var arr [][]string
 	var err error
-
-	if fields["cID"].present && fields["cName"].present && fields["cPoints"].present {
-		arr, err = dbExeQuery(stm, fields["cID"].value, fields["cName"].value, fields["cPoints"].value)
-	} else if fields["cID"].present && fields["cName"].present {
-		arr, err = dbExeQuery(stm, fields["cID"].value, fields["cName"].value)
-	} else if fields["cName"].present && fields["cPoints"].present {
-		arr, err = dbExeQuery(stm, fields["cName"].value, fields["cPoints"].value)
-	} else if fields["cID"].present && fields["cPoints"].present {
-		arr, err = dbExeQuery(stm, fields["cID"].value, fields["cPoints"].value)
-	} else if fields["cID"].present {
-		arr, err = dbExeQuery(stm, fields["cID"].value)
-	} else if fields["cName"].present {
-		arr, err = dbExeQuery(stm, fields["cName"].value)
-	} else if fields["cPoints"].present {
-		arr, err = dbExeQuery(stm, fields["cPoints"].value)
-	} else {
-		arr, err = dbExeQuery(stm)
+	arr, err = db_exeQuery(stm)
+	if err == nil {
+		log.Println(" [db] Reading Full Table Successful")
 	}
-
 	return arr, err
 }

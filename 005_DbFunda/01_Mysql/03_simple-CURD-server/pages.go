@@ -4,35 +4,44 @@ import (
 	"net/http"
 )
 
-type pageData struct {
-	TableCreated bool
-	Title        string
-	Heading      string
-	Rec          []string
-	Recs         [][]string
-}
-
 type formField struct {
-	present bool
-	value   string
-	field   string
+	Present bool
+	Value   string
 }
 
 func checkField(key string, r *http.Request) formField {
 	var f formField
-	f.field = key
-	f.value = r.FormValue(key)
-	if len(f.value) != 0 {
-		f.present = true
+	f.Value = r.FormValue(key)
+	if len(f.Value) != 0 {
+		f.Present = true
 	} else {
-		f.present = false
+		f.Present = false
 	}
 	return f
 }
 
+type pageDataMin struct {
+	TableCreated bool
+	Title        string
+	Heading      string
+}
+
+func newPageDataMin(title, heading string) pageDataMin {
+	return pageDataMin{tableCreated, title, heading}
+}
+
+type pageData struct {
+	pageDataMin
+	Recs  [][]string
+	Finfo map[string]formField
+}
+
+func updatePageData(p *pageData, title, heading string) {
+	p.pageDataMin = newPageDataMin(title, heading)
+}
+
 func root(w http.ResponseWriter, r *http.Request) {
-	pgData := pageData{tableCreated,
-		"Home Page", "Welcome to the CURD Server", nil, nil}
+	pgData := newPageDataMin("Home Page", "Welcome to the CURD Server")
 	tmpl.ExecuteTemplate(w, "index.gohtml", pgData)
 }
 
@@ -54,8 +63,7 @@ func createTable(w http.ResponseWriter, r *http.Request) {
 	err := dbTableCreate()
 	if err == nil {
 		tableCreated = true
-		pgData := pageData{tableCreated,
-			"Table Creation", "Table Successfully Created !", nil, nil}
+		pgData := newPageDataMin("Table Creation", "Table Successfully Created !")
 		tmpl.ExecuteTemplate(w, "index.gohtml", pgData)
 	} else {
 		check(err)
@@ -67,13 +75,12 @@ func readAll(w http.ResponseWriter, r *http.Request) {
 	if !existingTable(w, r) {
 		return
 	}
-	pgData := pageData{tableCreated,
-		"Reading All Records", "All Records", nil, nil}
+	var pgData pageData
 	var err error
 	// Actually Read all data
-	pgData.Recs, err = dbTableReadAll()
+	pgData.Recs, err = dbReadAll(r)
 	if err == nil {
-		pgData.Rec = record{}.fields()
+		updatePageData(&pgData, "Reading All Records", "All Records")
 		tmpl.ExecuteTemplate(w, "readall.gohtml", pgData)
 	} else {
 		check(err)
@@ -85,12 +92,12 @@ func findRecord(w http.ResponseWriter, r *http.Request) {
 	if !existingTable(w, r) {
 		return
 	}
-	pgData := pageData{tableCreated,
-		"Find Records", "Finding Records of Interest", nil, nil}
+
 	var err error
-	pgData.Recs, err = dbsearchProcess(r)
+	pgData, err := dbSearch(r)
+
 	if err == nil {
-		pgData.Rec = record{}.fields()
+		updatePageData(&pgData, "Find Records", "Finding Records of Interest")
 		tmpl.ExecuteTemplate(w, "find.gohtml", pgData)
 	} else {
 		check(err)
@@ -102,8 +109,7 @@ func updateRecord(w http.ResponseWriter, r *http.Request) {
 	if !existingTable(w, r) {
 		return
 	}
-	pgData := pageData{tableCreated,
-		"Record Update", "Updating Records", nil, nil}
+	pgData := newPageDataMin("Record Update", "Updating Records")
 	tmpl.ExecuteTemplate(w, "index.gohtml", pgData)
 }
 
@@ -111,8 +117,7 @@ func deleteRecord(w http.ResponseWriter, r *http.Request) {
 	if !existingTable(w, r) {
 		return
 	}
-	pgData := pageData{tableCreated,
-		"Record Deletion", "Delete Record", nil, nil}
+	pgData := newPageDataMin("Record Deletion", "Delete Record")
 	tmpl.ExecuteTemplate(w, "index.gohtml", pgData)
 }
 
@@ -125,8 +130,7 @@ func dropTable(w http.ResponseWriter, r *http.Request) {
 	err := dbTableDrop()
 	if err == nil {
 		tableCreated = false
-		pgData := pageData{tableCreated,
-			"Remove Table", "Table Deleted Succesfully !", nil, nil}
+		pgData := newPageDataMin("Remove Table", "Table Deleted Succesfully !")
 		tmpl.ExecuteTemplate(w, "index.gohtml", pgData)
 	} else {
 		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)

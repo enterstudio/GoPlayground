@@ -41,12 +41,40 @@
 </head>
 
 <body>
-    <h1 class="header">{{ .Heading }}</h1>
+{{ end }}
+
+{{ define "start_atf" }}
+    <div class="atf">
+        <h1 class="header">{{ .Heading }}</h1>
+{{ end }}
+
+{{ define "end_atf" }}
+        {{ template "menu" . }}
+    </div> <!-- End of ATF -->
 {{ end }}
 
 {{ define "footer" }}
-    {{ template "menu" . }}
+    
 </body>
 
 </html>
+{{ end }}
+
+{{ define "records" }}
+    <div class="records-display">
+    {{ if not .Recs }}
+    <h2>No records found yet.</h2>
+    {{ else }}
+        <table border="1">
+        <tr><th>cID</th><th>cName</th><th>cPoints</th></tr>
+        {{ range .Recs }}
+        <tr>
+            {{ range $k, $v := . }}
+            <td>{{ $v }}</td>
+            {{ end }}
+        </tr>
+        {{ end }}
+        </table>
+    {{ end }}
+    </div>
 {{ end }}
