@@ -1,0 +1,9 @@
+{{ template "header" . }}
+{{ template "start_atf" . }}
+  <form action="/add" method="post" class="formfield">
+    <div><label for="cnamefield">Customer Name</label><input type="text" name="cname" id="cnamefield" placeholder="Name String"></div>
+    <div><label for="cpointsfield">Customer Points</label><input type="number" name="cpoints" id="cpointsfield" placeholder="Number of Points"></div>
+    <div style="align-content: center; justify-content: center;"><input type="submit" value="Add" class="spec1"></div>
+  </form>
+  {{ template "end_atf" . }}
+  {{ template "footer" . }}

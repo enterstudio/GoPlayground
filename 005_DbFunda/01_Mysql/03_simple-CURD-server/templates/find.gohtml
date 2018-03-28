@@ -3,8 +3,8 @@
   <form action="/find" method="post" class="formfield">
     <div><label for="cidfield">Customer ID</label><input type="number" name="cid" id="cidfield" placeholder="ID Number" value="{{ (index .Finfo "cID").Value }}"></div>
     <div><label for="cnamefield">Customer Name</label><input type="text" name="cname" id="cnamefield" placeholder="Name String" value="{{ (index .Finfo "cName").Value }}"></div>
-    <div><label for="cpointsfield">Customer Poinuts</label><input type="number" name="cpoints" id="cpointsfield" placeholder="Number of Points" value="{{ (index .Finfo "cPoints").Value }}"></div>
-    <p>You can leave out which ever field yoare unsure of. Instead just try to fill at least one of the above fields</p>
+    <div><label for="cpointsfield">Customer Points</label><input type="number" name="cpoints" id="cpointsfield" placeholder="Number of Points" value="{{ (index .Finfo "cPoints").Value }}"></div>
+    <div><p>You can leave out which ever field you are unsure of.<br> Instead just try to fill at least one of the above fields</p></div>
     <div style="align-content: center; justify-content: center;"><input type="submit" value="Find it" class="spec1"></div>
   </form>
   {{ template "records" . }}

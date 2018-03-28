@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
@@ -83,38 +84,6 @@ func disconnectDatabase() {
 	}
 }
 
-func dbTableCreate() error {
-	stmt, err := db.Prepare(`CREATE TABLE ` + tableName + `(
-		cID int NOT NULL AUTO_INCREMENT PRIMARY KEY,
-		cName text NOT NULL,
-		cPoints int NOT NULL
-	)`)
-	if err != nil {
-		return err
-	}
-	defer stmt.Close()
-	_, err = stmt.Exec()
-	if err != nil {
-		return err
-	}
-
-	log.Println(" [db] Table Created Successfully")
-	return nil
-}
-
-func dbTableDrop() error {
-	stmt, err := db.Prepare(`DROP TABLE ` + tableName)
-	check(err)
-
-	_, err = stmt.Exec()
-	if err != nil {
-		return err
-	}
-
-	log.Println(" [db] Removed Table Successfully")
-	return nil
-}
-
 func check(err error) {
 	if err != nil {
 		log.Println(err)
@@ -159,6 +128,19 @@ func db_searchStmt(fields map[string]formField) string {
 	return stm
 }
 
+func db_insertrStmt(fields map[string]formField) string {
+
+	stm := `INSERT INTO ` + tableName
+
+	if fields["cName"].Present && fields["cPoints"].Present {
+		stm += " (cName, cPoints) VALUES (?, ?)"
+	} else {
+		return ""
+	}
+
+	return stm
+}
+
 func db_exeQuery(stm string, params ...interface{}) ([][]string, error) {
 
 	stmt, err := db.Prepare(stm)
@@ -184,10 +166,53 @@ func db_exeQuery(stm string, params ...interface{}) ([][]string, error) {
 		log.Printf(" [db] Record # %d\t%s\t%d", r.cID, r.cName, r.cPoints)
 		arr = append(arr, r.get())
 	}
-
-	log.Println(" [db] Query Successful")
-
+	if err == nil {
+		log.Printf(" [db] Query Successful - %s", stm)
+	}
 	return arr, nil
+}
+
+func db_exeCmd(stm string, params ...interface{}) (int64, error) {
+	stmt, err := db.Prepare(stm)
+	check(err)
+	if err != nil {
+		return 0, err
+	}
+	defer stmt.Close()
+
+	result, err := stmt.Exec(params...)
+	check(err)
+	if err != nil {
+		return 0, err
+	}
+
+	n, err := result.RowsAffected()
+	check(err)
+
+	if err == nil {
+		log.Printf(" [db] Statement Executed (for %d) - %s", n, stm)
+	}
+	return n, err
+}
+
+func dbCreateTable() error {
+	_, err := db_exeCmd(`CREATE TABLE ` + tableName + `(
+		cID int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+		cName text NOT NULL,
+		cPoints int NOT NULL
+	)`)
+	if err == nil {
+		log.Println(" [db] Table Created Successfully")
+	}
+	return err
+}
+
+func dbDropTable() error {
+	_, err := db_exeCmd(`DROP TABLE ` + tableName)
+	if err == nil {
+		log.Println(" [db] Removed Table Successfully")
+	}
+	return err
 }
 
 func dbSearch(r *http.Request) (pageData, error) {
@@ -195,8 +220,6 @@ func dbSearch(r *http.Request) (pageData, error) {
 	pdData.Finfo = db_formFieldMap(r)
 	stm := db_searchStmt(pdData.Finfo)
 	fields := pdData.Finfo
-
-	log.Println(" Executing statement -", stm)
 
 	var err error
 
@@ -225,7 +248,6 @@ func dbReadAll(r *http.Request) ([][]string, error) {
 	fields := db_formFieldMap(r)
 	stm := db_searchStmt(fields)
 
-	log.Println(" Executing statement -", stm)
 	var arr [][]string
 	var err error
 	arr, err = db_exeQuery(stm)
@@ -233,4 +255,20 @@ func dbReadAll(r *http.Request) ([][]string, error) {
 		log.Println(" [db] Reading Full Table Successful")
 	}
 	return arr, err
+}
+
+func dbAddRecord(r *http.Request) error {
+	fields := db_formFieldMap(r)
+	stm := db_insertrStmt(fields)
+
+	if len(stm) == 0 {
+		return errors.New(" Missing Parameters")
+	}
+
+	n, err := db_exeCmd(stm, fields["cName"].Value, fields["cPoints"].Value)
+	if n == 1 && err == nil {
+		log.Println(" [db] Added Record Sucessfully")
+	}
+
+	return err
 }

@@ -9,17 +9,20 @@
             <button type="submit">Create Table</button>
         </form>
         {{ else }}
+        <form method="post" action="/add" class="hmenu">
+            <button type="submit">Add</button>
+        </form>
         <form method="post" action="/readall" class="hmenu">
-            <button type="submit">Read all Records</button>
+            <button type="submit">Read all</button>
         </form>
         <form method="post" action="/find" class="hmenu">
-            <button type="submit">Find Records</button>
+            <button type="submit">Find</button>
         </form>
         <form method="post" action="/update" class="hmenu">
-            <button type="submit">Update Records</button>
+            <button type="submit">Update</button>
         </form>
         <form method="post" action="/delete" class="hmenu">
-            <button type="submit">Delete Records</button>
+            <button type="submit">Delete</button>
         </form>
         <form method="post" action="/drop" class="hmenu">
             <button type="submit">Delete Table</button>

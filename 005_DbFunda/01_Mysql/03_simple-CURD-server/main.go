@@ -41,6 +41,7 @@ func init() {
 	http.Handle("/assets/", http.StripPrefix("/assets", http.FileServer(http.Dir("static"))))
 	http.HandleFunc("/", root)
 	http.HandleFunc("/create", createTable)
+	http.HandleFunc("/add", add)
 	http.HandleFunc("/readall", readAll)
 	http.HandleFunc("/find", findRecord)
 	http.HandleFunc("/update", updateRecord)

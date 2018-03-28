@@ -38,15 +38,25 @@ h2 {
 .formfield div {
     display: flex;
     justify-content: center;
+    align-items: center;
     padding: 3px;
+    min-width: 50vw;
 }
+
 .formfield label {
-    width: 20%;
+    width: 50%;
 }
+
+.formfield input {
+    font-size: 1rem;
+    padding: 0.2rem 0.4rem;
+}
+
 .spec1 {
-    font-size: 1.2rem;
+    font-size: 1rem;
     font-weight: bolder;
-    padding: 5px 10px;
+    padding: 0.1rem 0.6rem !important;
+    margin-top: 1rem;
 }
 
 .records-display {
@@ -79,7 +89,8 @@ table td,th {
 
 .hmenu button {
     padding: 0.1rem;
-    font-size: 2vh;
+    font-weight: bolder;
+    font-size: 3vh;
 }
 
 .hold {

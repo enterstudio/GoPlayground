@@ -60,7 +60,7 @@ func createTable(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// Call the Creation function
-	err := dbTableCreate()
+	err := dbCreateTable()
 	if err == nil {
 		tableCreated = true
 		pgData := newPageDataMin("Table Creation", "Table Successfully Created !")
@@ -69,6 +69,19 @@ func createTable(w http.ResponseWriter, r *http.Request) {
 		check(err)
 		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 	}
+}
+
+func add(w http.ResponseWriter, r *http.Request) {
+	if !existingTable(w, r) {
+		return
+	}
+	pgData := newPageDataMin("Add Records", "New Record")
+
+	err := dbAddRecord(r)
+	if err == nil {
+		pgData.Heading = " Record Created Successfully"
+	}
+	tmpl.ExecuteTemplate(w, "add.gohtml", pgData)
 }
 
 func readAll(w http.ResponseWriter, r *http.Request) {
@@ -127,7 +140,7 @@ func dropTable(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Call Drop Table
-	err := dbTableDrop()
+	err := dbDropTable()
 	if err == nil {
 		tableCreated = false
 		pgData := newPageDataMin("Remove Table", "Table Deleted Succesfully !")
