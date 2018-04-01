@@ -272,3 +272,67 @@ func dbAddRecord(r *http.Request) error {
 
 	return err
 }
+
+func dbUpdateRecord(r *http.Request) (int64, pageData, error) {
+	var pd pageData
+	var err error
+	var n int64
+	wasGet := r.FormValue("submit") == "Get"
+	wasUpdate := r.FormValue("submit") == "Update"
+	fields := db_formFieldMap(r)
+	// Get the Fields to the Correct Place
+	pd.Finfo = db_formFieldMap(r)
+	// Check if Parameters are present was present
+	if wasUpdate {
+		if !fields["cID"].Present {
+			return 0, pd, errors.New(" Missing ID")
+		}
+		if !fields["cName"].Present {
+			return 0, pd, errors.New(" Missing Name")
+		}
+		if !fields["cPoints"].Present {
+			return 0, pd, errors.New(" Missing Points")
+		}
+		// Remove All other Fields for the Search Statement
+		fields["cName"] = fields["cName"].UpdatePresent(false)
+		fields["cPoints"] = fields["cPoints"].UpdatePresent(false)
+		// Get the Search Statement
+		stm := db_searchStmt(fields)
+		log.Println(" [db] Executing the Update Item Search")
+		// Execute the Query with only ID
+		pd.Recs, err = db_exeQuery(stm, fields["cID"].Value)
+		// Clean up the Fields
+		pd.Finfo["cID"] = formField{false, ""}
+		pd.Finfo["cName"] = formField{false, ""}
+		pd.Finfo["cPoints"] = formField{false, ""}
+		if err != nil {
+			return 0, pd, err
+		}
+		n = int64(len(pd.Recs))
+		if n == 0 {
+			return n, pd, errors.New(" No Records Found")
+		}
+		if n > 1 {
+			return n, pd, errors.New(" Primary Key Corrupt")
+		}
+		// Create the Update Statement
+		stm = `UPDATE ` + tableName + ` SET cID=?,cName=?,cPoints=? WHERE cID=?`
+		log.Println(" [db] Update the New Values ")
+		// Execute - For First Record
+		n, err = db_exeCmd(stm,
+			pd.Recs[0][0], fields["cName"].Value, fields["cPoints"].Value,
+			pd.Recs[0][0])
+	}
+
+	if wasGet {
+		pd, err = dbSearch(r)
+		n = int64(len(pd.Recs))
+		if n != 0 && err == nil {
+			// Insert the Data Back into the Form
+			pd.Finfo["cID"] = formField{false, pd.Recs[0][0]}
+			pd.Finfo["cName"] = formField{false, pd.Recs[0][1]}
+			pd.Finfo["cPoints"] = formField{false, pd.Recs[0][2]}
+		}
+	}
+	return n, pd, err
+}
