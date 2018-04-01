@@ -165,8 +165,22 @@ func deleteRecord(w http.ResponseWriter, r *http.Request) {
 	if !existingTable(w, r) {
 		return
 	}
-	pgData := newPageDataMin("Record Deletion", "Delete Record")
-	tmpl.ExecuteTemplate(w, "index.gohtml", pgData)
+	var err error
+	var pgData pageData
+	wasGet := r.FormValue("submit") == "Get"
+	pgData, err = dbDeleteRecord(r)
+
+	updatePageData(&pgData, "Record Deletion", "Delete Record")
+	if err != nil {
+		pgData.Heading += " -" + err.Error()
+	} else {
+		if wasGet {
+			pgData.Heading += " - Found one"
+		} else {
+			pgData.Heading += " - Successful"
+		}
+	}
+	tmpl.ExecuteTemplate(w, "delete.gohtml", pgData)
 }
 
 func dropTable(w http.ResponseWriter, r *http.Request) {

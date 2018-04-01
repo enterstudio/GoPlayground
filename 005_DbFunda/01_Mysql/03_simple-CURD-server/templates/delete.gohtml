@@ -1,0 +1,10 @@
+{{ template "header" . }}
+{{ template "start_atf" . }}
+  <form action="/delete" method="post" class="formfield">
+    <div><label for="cidfield">Customer ID <b>(Primary)</b></label><input type="number" name="cid" id="cidfield" placeholder="ID Number" value="{{ (index .Finfo "cID").Value }}"></div>
+    <div><label for="cnamefield">Customer Name</label><input type="text" name="cname" id="cnamefield" placeholder="Name String" value="{{ (index .Finfo "cName").Value }}" readonly></div>
+    <div><label for="cpointsfield">Customer Points</label><input type="number" name="cpoints" id="cpointsfield" placeholder="Number of Points" value="{{ (index .Finfo "cPoints").Value }}" readonly></div>
+    <div><input type="submit" value="Get" name="submit" style="margin: 0 2rem !important;"><input type="submit" value="Delete" name="submit"></div>
+  </form>
+  {{ template "end_atf" . }}
+  {{ template "footer" . }}

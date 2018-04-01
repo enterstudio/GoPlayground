@@ -279,6 +279,9 @@ func dbUpdateRecord(r *http.Request) (int64, pageData, error) {
 	var n int64
 	wasGet := r.FormValue("submit") == "Get"
 	wasUpdate := r.FormValue("submit") == "Update"
+	if !wasGet && !wasUpdate {
+		return 0, pd, errors.New(" Need Input")
+	}
 	fields := db_formFieldMap(r)
 	// Get the Fields to the Correct Place
 	pd.Finfo = db_formFieldMap(r)
@@ -335,4 +338,60 @@ func dbUpdateRecord(r *http.Request) (int64, pageData, error) {
 		}
 	}
 	return n, pd, err
+}
+
+func dbDeleteRecord(r *http.Request) (pageData, error) {
+	var pd pageData
+	var err error
+	wasGet := r.FormValue("submit") == "Get"
+	wasDelete := r.FormValue("submit") == "Delete"
+	if !wasGet && !wasDelete {
+		return pd, errors.New(" Need Input")
+	}
+	fields := db_formFieldMap(r)
+	// Get the Fields to the Correct Place
+	pd.Finfo = db_formFieldMap(r)
+	// Handle Field Error
+	if !fields["cID"].Present {
+		return pd, errors.New(" Missing ID")
+	}
+	// Remove All other Fields for the Search Statement
+	fields["cName"] = fields["cName"].UpdatePresent(false)
+	fields["cPoints"] = fields["cPoints"].UpdatePresent(false)
+	// Get the Search Statement
+	stm := db_searchStmt(fields)
+	log.Println(" [db] Executing the Delete Item Search")
+	// Execute the Query with only ID
+	pd.Recs, err = db_exeQuery(stm, fields["cID"].Value)
+
+	// Clean up the Fields
+	pd.Finfo["cID"] = formField{false, ""}
+	pd.Finfo["cName"] = formField{false, ""}
+	pd.Finfo["cPoints"] = formField{false, ""}
+	// Retrun Error in case Query Failed
+	if err != nil {
+		return pd, err
+	}
+
+	// Find out about the Records Found
+	n := int64(len(pd.Recs))
+	if n == 0 {
+		return pd, errors.New(" No Records Found")
+	}
+	if n > 1 {
+		return pd, errors.New(" Primary Key Corrupt")
+	}
+	// Insert the Data Back into the Form
+	pd.Finfo["cID"] = formField{false, pd.Recs[0][0]}
+	pd.Finfo["cName"] = formField{false, pd.Recs[0][1]}
+	pd.Finfo["cPoints"] = formField{false, pd.Recs[0][2]}
+	if wasDelete {
+		stm = `DELETE FROM ` + tableName +
+			` WHERE cID=?`
+		n, err = db_exeCmd(stm, pd.Finfo["cID"].Value)
+		if n == 0 {
+			return pd, errors.New(" No Records Deleted")
+		}
+	}
+	return pd, err
 }
