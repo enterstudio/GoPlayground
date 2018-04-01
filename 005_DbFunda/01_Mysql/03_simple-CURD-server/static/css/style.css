@@ -84,13 +84,13 @@ table td,th {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 0 0.2rem;    
+    margin: 0 1vw;    
 }
 
 .hmenu button {
-    padding: 0.1rem;
+    padding: 0.2vh 1vw;
     font-weight: bolder;
-    font-size: 3vh;
+    font-size: 2vw;
 }
 
 .hold {

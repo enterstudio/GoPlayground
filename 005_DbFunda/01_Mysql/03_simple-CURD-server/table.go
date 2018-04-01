@@ -174,20 +174,20 @@ func db_exeQuery(stm string, params ...interface{}) ([][]string, error) {
 
 func db_exeCmd(stm string, params ...interface{}) (int64, error) {
 	stmt, err := db.Prepare(stm)
-	check(err)
+	// check(err)
 	if err != nil {
 		return 0, err
 	}
 	defer stmt.Close()
 
 	result, err := stmt.Exec(params...)
-	check(err)
+	// check(err)
 	if err != nil {
 		return 0, err
 	}
 
 	n, err := result.RowsAffected()
-	check(err)
+	// check(err)
 
 	if err == nil {
 		log.Printf(" [db] Statement Executed (for %d) - %s", n, stm)
@@ -325,6 +325,9 @@ func dbUpdateRecord(r *http.Request) (int64, pageData, error) {
 		n, err = db_exeCmd(stm,
 			pd.Recs[0][0], fields["cName"].Value, fields["cPoints"].Value,
 			pd.Recs[0][0])
+		if n == 1 && err == nil {
+			log.Println(" [db] Updated Record Sucessfully")
+		}
 	}
 
 	if wasGet {
@@ -391,6 +394,9 @@ func dbDeleteRecord(r *http.Request) (pageData, error) {
 		n, err = db_exeCmd(stm, pd.Finfo["cID"].Value)
 		if n == 0 {
 			return pd, errors.New(" No Records Deleted")
+		}
+		if n == 1 && err == nil {
+			log.Println(" [db] Deleted Record Sucessfully")
 		}
 	}
 	return pd, err
