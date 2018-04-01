@@ -118,15 +118,19 @@ func findRecord(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var err error
-	pgData, err := dbSearch(r)
+	var pgData pageData
+	wasFind := r.FormValue("submit") == "Find it"
 
-	if err == nil {
-		updatePageData(&pgData, "Find Records", "Finding Records of Interest")
-		tmpl.ExecuteTemplate(w, "find.gohtml", pgData)
-	} else {
+	if wasFind {
+		pgData, err = dbSearch(r)
+	}
+	if err != nil {
 		check(err)
 		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 	}
+	updatePageData(&pgData, "Find Records", "Finding Records of Interest")
+
+	tmpl.ExecuteTemplate(w, "find.gohtml", pgData)
 }
 
 func updateRecord(w http.ResponseWriter, r *http.Request) {
