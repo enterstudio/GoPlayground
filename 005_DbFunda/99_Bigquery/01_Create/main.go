@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"os"
 
 	// Imports the Google Cloud BigQuery client package.
 	"cloud.google.com/go/bigquery"
@@ -12,10 +13,12 @@ import (
 func main() {
 	// Need to have Authentication Credentials in Place
 	// Read the "Readme.md" file for more
+	// 01_Create/Readme.md#getting-account-credentials
 	ctx := context.Background()
 
 	// Sets your Google Cloud Platform project ID.
-	projectID := "<YOUR-PROJECT-ID-HERE>"
+	//projectID := "<YOUR-PROJECT-ID-HERE>"
+	projectID := os.Getenv("PROJECT_ID")
 
 	// Creates a client.
 	client, err := bigquery.NewClient(ctx, projectID)
