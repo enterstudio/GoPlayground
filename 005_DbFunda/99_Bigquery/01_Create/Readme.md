@@ -38,10 +38,10 @@ Steps to get there:
  or Select *New Service account*
  5. In both cases keep the **JSON** format checked for *Key Type*
  6. If you have to create a *New Service Account* then
-    a. Set a understandable *Service Name*
-	b. Set the *Role* to **Project > Owner**
-	c. Make sure that the *Service Account ID* says `@<PROJECT_ID>.iam.gserviceaccount.com`
-	d. Click on *Create* to get the JSON file for Download
+    1. Set a understandable *Service Name*
+    2. Set the *Role* to **Project > Owner**
+    3. Make sure that the *Service Account ID* says `@<PROJECT_ID>.iam.gserviceaccount.com`
+    4. Click on *Create* to get the JSON file for Download 
  7. Note that **DO NOT SELECT** `App Engine service account` or `Compute Engine service account` 
  as that would not work. 
  8. After getting the **JSON** from either of the *Credential Accounts* this needs
