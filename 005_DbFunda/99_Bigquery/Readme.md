@@ -1,4 +1,4 @@
-# Create a GCP BigQuery Dataset
+# GCP BigQuery
 
 We are using **Google Cloud Platform's** ***BigQuery** service 
 for data storage and retrival.
@@ -8,11 +8,6 @@ The service provides **10GB** of free data storage capacity and **1TB** of queri
 This is quite enough for basic data manipulation and analysis workloads 
 targetted at Mobile backends and API gateways.
 
-## Objectives
-
-We are going to create a dataset by the name of `my_new_dataset` in the select **GCP** project.
-
-A **dataset** is like a *Database* where multiple tables can be created. 
 
 ## Getting Account Credentials
 
@@ -62,5 +57,5 @@ Steps to get there:
  Essentially the *Environment Variable* ***GOOGLE_APPLICATION_CREDENTIALS*** contains the *PATH*
  to the file.
 
-After this configuration we can run our Program.
+After this configuration we can run our Programs.
 

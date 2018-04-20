@@ -13,7 +13,6 @@ import (
 func main() {
 	// Need to have Authentication Credentials in Place
 	// Read the "Readme.md" file for more
-	// 01_Create/Readme.md#getting-account-credentials
 	ctx := context.Background()
 
 	// Sets your Google Cloud Platform project ID.
