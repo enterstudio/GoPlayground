@@ -9,3 +9,6 @@ We are going to create a dataset by the name of `my_new_dataset` in the select *
 
 A **dataset** is like a *Database* where multiple tables can be created. 
 
+## Getting the Credentials
+
+Make sure to read the [Readme.md](../Readme.md) file in the root of the **BigQuery** directory

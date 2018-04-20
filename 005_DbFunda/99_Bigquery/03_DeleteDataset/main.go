@@ -5,8 +5,6 @@ import (
 	"log"
 	"os"
 
-	"google.golang.org/api/iterator"
-
 	"cloud.google.com/go/bigquery"
 )
 
@@ -24,21 +22,12 @@ func main() {
 		log.Fatalf("Failed to create client: %v", err)
 	}
 
-	log.Println(" The Datasets under the project", projectID, "are:")
-	iter := client.Datasets(ctx)
-	lines := 0
-	for {
-		ds, err := iter.Next()
-		if err == iterator.Done {
-			break
-		} else if err != nil {
-			log.Fatal(err)
-		}
-		log.Println(" - ", ds.DatasetID)
-		lines++
+	// Sets the name for the new dataset.
+	datasetName := "my_new_dataset"
+
+	if err := client.Dataset(datasetName).Delete(ctx); err != nil {
+		log.Fatalln(err)
 	}
 
-	if lines == 0 {
-		log.Println("  Looks like there are no Datasets available")
-	}
+	log.Println(" Deleted Dataset '", datasetName, "' from project", projectID)
 }
